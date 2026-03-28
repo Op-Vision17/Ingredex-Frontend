@@ -34,11 +34,21 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
-          'Hi, $firstName! 👋',
-          style: AppTextStyles.heading3.copyWith(
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/app_logo_bgremove.png',
+              width: 32,
+              height: 32,
+            ),
+            const SizedBox(width: 12),
+            Text(
+              'Hi, $firstName! 👋',
+              style: AppTextStyles.heading3.copyWith(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+          ],
         ),
         actions: [
           IconButton(

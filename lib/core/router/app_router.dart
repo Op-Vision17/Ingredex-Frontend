@@ -65,7 +65,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/splash',
         builder: (context, state) =>
-            const Scaffold(body: Center(child: CircularProgressIndicator())),
+            Scaffold(body: Center(child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('assets/app_logo_bgremove.png', width: 200, height: 200),
+                const SizedBox(height: 24),
+                const CircularProgressIndicator(),
+              ],
+            ))),
       ),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(

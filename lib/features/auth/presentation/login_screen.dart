@@ -119,10 +119,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         ),
                       ),
                       const SizedBox(height: 40),
-                      Icon(
-                        Icons.eco_rounded,
-                        size: 180,
-                        color: AppColors.primaryOrange.withValues(alpha: 0.85),
+                      Image.asset(
+                        'assets/app_logo_bgremove.png',
+                        width: 180,
+                        height: 180,
                       ),
                     ],
                   ),
