@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../core/utils/snackbar_service.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_text_field.dart';
 import '../providers/scan_provider.dart';
 
 class OcrScanScreen extends ConsumerStatefulWidget {
@@ -20,6 +22,30 @@ class _OcrScanScreenState extends ConsumerState<OcrScanScreen> {
   String? _textPreview;
   double? _confidence;
   bool _showFullPreview = false;
+  final _name = TextEditingController();
+  late final ProviderSubscription<ScanState> _scanSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _scanSubscription = ref.listenManual<ScanState>(
+      scanNotifierProvider,
+      (prev, next) {
+        next.whenOrNull(
+          error: (message) {
+            SnackBarService.show(message);
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _scanSubscription.close();
+    _name.dispose();
+    super.dispose();
+  }
 
   Future<void> _pick(ImageSource source) async {
     final picker = ImagePicker();
@@ -45,7 +71,7 @@ class _OcrScanScreenState extends ConsumerState<OcrScanScreen> {
       });
       final analyzed = await ref
           .read(scanNotifierProvider.notifier)
-          .analyzeFromOcr(ocr);
+          .analyzeFromOcr(ocr, _name.text.trim().isEmpty ? null : _name.text.trim());
       if (!mounted) return;
       context.push('/result', extra: analyzed);
     } catch (e) {
@@ -73,6 +99,11 @@ class _OcrScanScreenState extends ConsumerState<OcrScanScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              AppTextField(
+                controller: _name,
+                hintText: 'Product name (optional)',
+              ),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(

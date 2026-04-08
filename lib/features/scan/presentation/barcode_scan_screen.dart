@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/utils/snackbar_service.dart';
 import '../providers/scan_provider.dart';
 
 class BarcodeScanScreen extends ConsumerStatefulWidget {
@@ -21,6 +22,22 @@ class _BarcodeScanScreenState extends ConsumerState<BarcodeScanScreen> {
   );
   bool _isProcessing = false;
   bool _hasPermissionError = false;
+  late final ProviderSubscription<ScanState> _scanSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _scanSubscription = ref.listenManual<ScanState>(
+      scanNotifierProvider,
+      (prev, next) {
+        next.whenOrNull(
+          error: (message) {
+            SnackBarService.show(message);
+          },
+        );
+      },
+    );
+  }
 
   void _markPermissionError() {
     if (_hasPermissionError || !mounted) return;
@@ -29,6 +46,7 @@ class _BarcodeScanScreenState extends ConsumerState<BarcodeScanScreen> {
 
   @override
   void dispose() {
+    _scanSubscription.close();
     _scannerController.dispose();
     super.dispose();
   }

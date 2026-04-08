@@ -105,9 +105,10 @@ class AuthInterceptor extends Interceptor {
     final request = err.requestOptions;
     final isUnauthorized = statusCode == 401;
     final isRefreshCall = request.path == ApiEndpoints.refresh;
+    final isVerifyOtpCall = request.path == ApiEndpoints.verifyOtp;
     final alreadyRetried = request.extra['retried'] == true;
 
-    if (!isUnauthorized || isRefreshCall || alreadyRetried) {
+    if (!isUnauthorized || isRefreshCall || isVerifyOtpCall || alreadyRetried) {
       if (_shouldRetry(err, request)) {
         try {
           final response = await _retryOnce(request);

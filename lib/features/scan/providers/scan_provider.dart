@@ -64,8 +64,8 @@ class ScanNotifier extends StateNotifier<ScanState> {
     );
   }
 
-  Future<AnalyzeResponse> analyzeFromOcr(OcrResult ocr) async {
-    return analyzeManual(ocr.extractedText, null, scanType: 'ocr');
+  Future<AnalyzeResponse> analyzeFromOcr(OcrResult ocr, [String? productName]) async {
+    return analyzeManual(ocr.extractedText, productName, scanType: 'ocr');
   }
 
   Future<AnalyzeResponse> analyzeManual(

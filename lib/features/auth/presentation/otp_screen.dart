@@ -6,6 +6,7 @@ import 'package:pinput/pinput.dart';
 import 'dart:async';
 
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/utils/snackbar_service.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../providers/auth_provider.dart';
 
@@ -48,6 +49,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
             error: (message) {
               if (!mounted) return;
               _shakeController.forward(from: 0);
+              SnackBarService.show(message);
             },
           ),
         );

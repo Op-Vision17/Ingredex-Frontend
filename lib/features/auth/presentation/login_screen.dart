@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../../core/utils/validators.dart';
+import '../../../core/utils/snackbar_service.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
 import '../providers/auth_provider.dart';
@@ -47,6 +48,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             otpSent: (email) {
               if (!mounted) return;
               context.push('/otp/${Uri.encodeComponent(email)}');
+            },
+            error: (message) {
+              SnackBarService.show(message);
             },
           ),
         );

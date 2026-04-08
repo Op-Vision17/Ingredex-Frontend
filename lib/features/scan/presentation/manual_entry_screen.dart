@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/utils/snackbar_service.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
 import '../providers/scan_provider.dart';
@@ -18,9 +19,26 @@ class _ManualEntryScreenState extends ConsumerState<ManualEntryScreen> {
   final _name = TextEditingController();
   final _ingredients = TextEditingController();
   final _scroll = ScrollController();
+  late final ProviderSubscription<ScanState> _scanSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _scanSubscription = ref.listenManual<ScanState>(
+      scanNotifierProvider,
+      (prev, next) {
+        next.whenOrNull(
+          error: (message) {
+            SnackBarService.show(message);
+          },
+        );
+      },
+    );
+  }
 
   @override
   void dispose() {
+    _scanSubscription.close();
     _name.dispose();
     _ingredients.dispose();
     _scroll.dispose();
