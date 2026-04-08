@@ -1,7 +1,7 @@
 class AppConstants {
   const AppConstants._();
 
-  static const baseUrl = 'http://192.168.1.8:8000';
+  static const baseUrl = 'https://ingredex-53730d94028f.herokuapp.com';
 
   static const accessTokenKey = 'access_token';
   static const refreshTokenKey = 'refresh_token';
