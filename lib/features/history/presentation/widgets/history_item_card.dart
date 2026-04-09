@@ -26,8 +26,8 @@ class HistoryItemCard extends StatelessWidget {
     final summary = item.analysisResult?['summary'] as String?;
     final scheme = Theme.of(context).colorScheme;
     final scoreColor = switch (score ?? 0) {
-      >= 7 => AppColors.success,
-      >= 4 => AppColors.warning,
+      >= 70 => AppColors.success,
+      >= 40 => AppColors.warning,
       >= 1 => AppColors.error,
       _ => scheme.onSurfaceVariant,
     };

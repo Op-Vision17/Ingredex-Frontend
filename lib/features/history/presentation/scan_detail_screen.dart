@@ -95,8 +95,8 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen>
           if (analysis != null) {
             final score = analysis.healthScore;
             final scoreColor = switch (score) {
-              >= 7 => AppColors.success,
-              >= 4 => AppColors.warning,
+              >= 70 => AppColors.success,
+              >= 40 => AppColors.warning,
               _ => AppColors.error,
             };
             return ListView(
@@ -314,7 +314,7 @@ class _ScoreGauge extends StatelessWidget {
           value: score.toDouble(),
           axis: GaugeAxis(
             min: 0,
-            max: 10,
+            max: 100,
             degrees: 270,
             style: GaugeAxisStyle(
               thickness: 14,
@@ -330,7 +330,7 @@ class _ScoreGauge extends StatelessWidget {
               ),
               GaugeSegment(
                 from: score.toDouble(),
-                to: 10,
+                to: 100,
                 color: scoreColor.withValues(alpha: 0.12),
               ),
             ],
@@ -349,7 +349,7 @@ class _ScoreGauge extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                'out of 10',
+                'out of 100',
                 style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
               ),
               const SizedBox(height: 2),
@@ -400,7 +400,7 @@ class _ScoreGauge extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: List.generate(10, (i) {
-            final filled = i < score;
+            final filled = i < (score / 10);
             return Container(
               width: 20,
               height: 4,

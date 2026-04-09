@@ -39,8 +39,8 @@ class _AnalysisResultScreenState extends ConsumerState<AnalysisResultScreen>
   }
 
   Color _scoreColor(double score) {
-    if (score >= 7) return AppColors.success;
-    if (score >= 4) return AppColors.warning;
+    if (score >= 70) return AppColors.success;
+    if (score >= 40) return AppColors.warning;
     return AppColors.error;
   }
 
@@ -258,7 +258,7 @@ class _ScoreGauge extends StatelessWidget {
           value: score.toDouble(),
           axis: GaugeAxis(
             min: 0,
-            max: 10,
+            max: 100,
             degrees: 270,
             style: GaugeAxisStyle(
               thickness: 14,
@@ -274,7 +274,7 @@ class _ScoreGauge extends StatelessWidget {
               ),
               GaugeSegment(
                 from: score.toDouble(),
-                to: 10,
+                to: 100,
                 color: scoreColor.withValues(alpha: 0.12),
               ),
             ],
@@ -293,7 +293,7 @@ class _ScoreGauge extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                'out of 10',
+                'out of 100',
                 style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
               ),
               const SizedBox(height: 2),
@@ -342,7 +342,7 @@ class _ScoreGauge extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: List.generate(10, (i) {
-            final filled = i < score;
+            final filled = i < (score / 10);
             return Container(
               width: 20,
               height: 4,

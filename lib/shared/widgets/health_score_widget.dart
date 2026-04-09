@@ -46,8 +46,8 @@ class _HealthScoreWidgetState extends State<HealthScoreWidget>
       };
 
   Color _color(double score) {
-    if (score >= 7) return AppColors.success;
-    if (score >= 4) return AppColors.warning;
+    if (score >= 70) return AppColors.success;
+    if (score >= 40) return AppColors.warning;
     return AppColors.error;
   }
 
@@ -70,7 +70,7 @@ class _HealthScoreWidgetState extends State<HealthScoreWidget>
             alignment: Alignment.center,
             children: [
               CircularProgressIndicator(
-                value: (widget.score / 10).clamp(0, 1) * _progress.value,
+                value: (widget.score / 100).clamp(0.0, 1.0) * _progress.value,
                 strokeWidth: widget.size == HealthScoreSize.small ? 4 : 8,
                 color: color,
                 backgroundColor: color.withValues(alpha: 0.2),
