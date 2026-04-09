@@ -22,6 +22,7 @@ class _OcrScanScreenState extends ConsumerState<OcrScanScreen> {
   File? _image;
   final _name = TextEditingController();
   late final ProviderSubscription<ScanState> _scanSubscription;
+  bool _isProcessing = false;
 
   @override
   void initState() {
@@ -55,7 +56,8 @@ class _OcrScanScreenState extends ConsumerState<OcrScanScreen> {
   }
 
   Future<void> _scanIngredients() async {
-    if (_image == null) return;
+    if (_image == null || _isProcessing) return;
+    setState(() => _isProcessing = true);
     try {
       final ocr = await ref
           .read(scanNotifierProvider.notifier)
@@ -67,13 +69,15 @@ class _OcrScanScreenState extends ConsumerState<OcrScanScreen> {
       context.push('/result', extra: analyzed);
     } catch (e) {
       if (!mounted) return;
+    } finally {
+      if (mounted) setState(() => _isProcessing = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(scanNotifierProvider);
-    final loading = state.maybeWhen(
+    final loading = _isProcessing || state.maybeWhen(
       scanning: () => true,
       analyzing: () => true,
       orElse: () => false,
@@ -143,7 +147,7 @@ class _OcrScanScreenState extends ConsumerState<OcrScanScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Lottie.asset(
-                      'assets/Walking Orange.lottie',
+                      'assets/Walking Orange.json',
                       width: 200,
                       height: 200,
                       fit: BoxFit.contain,

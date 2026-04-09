@@ -191,7 +191,7 @@ class _BarcodeScanScreenState extends ConsumerState<BarcodeScanScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Lottie.asset(
-                      'assets/Walking Orange.lottie',
+                      'assets/Walking Orange.json',
                       width: 200,
                       height: 200,
                       fit: BoxFit.contain,
