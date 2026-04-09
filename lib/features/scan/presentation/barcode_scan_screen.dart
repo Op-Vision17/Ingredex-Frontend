@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/utils/snackbar_service.dart';
@@ -55,7 +56,11 @@ class _BarcodeScanScreenState extends ConsumerState<BarcodeScanScreen> {
     if (_isProcessing) return;
     final code = capture.barcodes.first.rawValue;
     if (code == null || code.isEmpty) return;
-    _isProcessing = true;
+    
+    setState(() {
+      _isProcessing = true;
+    });
+    
     await HapticFeedback.mediumImpact();
     try {
       final barcode = await ref
@@ -69,7 +74,11 @@ class _BarcodeScanScreenState extends ConsumerState<BarcodeScanScreen> {
     } catch (_) {
       if (!mounted) return;
     } finally {
-      _isProcessing = false;
+      if (mounted) {
+        setState(() {
+          _isProcessing = false;
+        });
+      }
     }
   }
 
@@ -174,6 +183,33 @@ class _BarcodeScanScreenState extends ConsumerState<BarcodeScanScreen> {
               ),
             ),
           ],
+          if (_isProcessing || isBusy)
+            Container(
+              color: Colors.black.withValues(alpha: 0.85),
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Lottie.asset(
+                      'assets/Walking Orange.lottie',
+                      width: 200,
+                      height: 200,
+                      fit: BoxFit.contain,
+                    ),
+                    const SizedBox(height: 24),
+                    const Text(
+                      'Analysis getting ready...',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );
