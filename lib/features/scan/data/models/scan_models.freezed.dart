@@ -393,6 +393,8 @@ mixin _$IngredientIssue {
   String get ingredient => throw _privateConstructorUsedError;
   String get risk => throw _privateConstructorUsedError;
   String get reason => throw _privateConstructorUsedError;
+  @JsonKey(name: 'source_domain')
+  String get sourceDomain => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -406,7 +408,11 @@ abstract class $IngredientIssueCopyWith<$Res> {
           IngredientIssue value, $Res Function(IngredientIssue) then) =
       _$IngredientIssueCopyWithImpl<$Res, IngredientIssue>;
   @useResult
-  $Res call({String ingredient, String risk, String reason});
+  $Res call(
+      {String ingredient,
+      String risk,
+      String reason,
+      @JsonKey(name: 'source_domain') String sourceDomain});
 }
 
 /// @nodoc
@@ -425,6 +431,7 @@ class _$IngredientIssueCopyWithImpl<$Res, $Val extends IngredientIssue>
     Object? ingredient = null,
     Object? risk = null,
     Object? reason = null,
+    Object? sourceDomain = null,
   }) {
     return _then(_value.copyWith(
       ingredient: null == ingredient
@@ -439,6 +446,10 @@ class _$IngredientIssueCopyWithImpl<$Res, $Val extends IngredientIssue>
           ? _value.reason
           : reason // ignore: cast_nullable_to_non_nullable
               as String,
+      sourceDomain: null == sourceDomain
+          ? _value.sourceDomain
+          : sourceDomain // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -451,7 +462,11 @@ abstract class _$$IngredientIssueImplCopyWith<$Res>
       __$$IngredientIssueImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String ingredient, String risk, String reason});
+  $Res call(
+      {String ingredient,
+      String risk,
+      String reason,
+      @JsonKey(name: 'source_domain') String sourceDomain});
 }
 
 /// @nodoc
@@ -468,6 +483,7 @@ class __$$IngredientIssueImplCopyWithImpl<$Res>
     Object? ingredient = null,
     Object? risk = null,
     Object? reason = null,
+    Object? sourceDomain = null,
   }) {
     return _then(_$IngredientIssueImpl(
       ingredient: null == ingredient
@@ -482,6 +498,10 @@ class __$$IngredientIssueImplCopyWithImpl<$Res>
           ? _value.reason
           : reason // ignore: cast_nullable_to_non_nullable
               as String,
+      sourceDomain: null == sourceDomain
+          ? _value.sourceDomain
+          : sourceDomain // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -490,7 +510,10 @@ class __$$IngredientIssueImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$IngredientIssueImpl implements _IngredientIssue {
   const _$IngredientIssueImpl(
-      {required this.ingredient, required this.risk, required this.reason});
+      {required this.ingredient,
+      required this.risk,
+      required this.reason,
+      @JsonKey(name: 'source_domain') this.sourceDomain = ''});
 
   factory _$IngredientIssueImpl.fromJson(Map<String, dynamic> json) =>
       _$$IngredientIssueImplFromJson(json);
@@ -501,10 +524,13 @@ class _$IngredientIssueImpl implements _IngredientIssue {
   final String risk;
   @override
   final String reason;
+  @override
+  @JsonKey(name: 'source_domain')
+  final String sourceDomain;
 
   @override
   String toString() {
-    return 'IngredientIssue(ingredient: $ingredient, risk: $risk, reason: $reason)';
+    return 'IngredientIssue(ingredient: $ingredient, risk: $risk, reason: $reason, sourceDomain: $sourceDomain)';
   }
 
   @override
@@ -515,12 +541,15 @@ class _$IngredientIssueImpl implements _IngredientIssue {
             (identical(other.ingredient, ingredient) ||
                 other.ingredient == ingredient) &&
             (identical(other.risk, risk) || other.risk == risk) &&
-            (identical(other.reason, reason) || other.reason == reason));
+            (identical(other.reason, reason) || other.reason == reason) &&
+            (identical(other.sourceDomain, sourceDomain) ||
+                other.sourceDomain == sourceDomain));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, ingredient, risk, reason);
+  int get hashCode =>
+      Object.hash(runtimeType, ingredient, risk, reason, sourceDomain);
 
   @JsonKey(ignore: true)
   @override
@@ -539,9 +568,11 @@ class _$IngredientIssueImpl implements _IngredientIssue {
 
 abstract class _IngredientIssue implements IngredientIssue {
   const factory _IngredientIssue(
-      {required final String ingredient,
-      required final String risk,
-      required final String reason}) = _$IngredientIssueImpl;
+          {required final String ingredient,
+          required final String risk,
+          required final String reason,
+          @JsonKey(name: 'source_domain') final String sourceDomain}) =
+      _$IngredientIssueImpl;
 
   factory _IngredientIssue.fromJson(Map<String, dynamic> json) =
       _$IngredientIssueImpl.fromJson;
@@ -552,6 +583,9 @@ abstract class _IngredientIssue implements IngredientIssue {
   String get risk;
   @override
   String get reason;
+  @override
+  @JsonKey(name: 'source_domain')
+  String get sourceDomain;
   @override
   @JsonKey(ignore: true)
   _$$IngredientIssueImplCopyWith<_$IngredientIssueImpl> get copyWith =>
@@ -566,6 +600,8 @@ GoodIngredient _$GoodIngredientFromJson(Map<String, dynamic> json) {
 mixin _$GoodIngredient {
   String get ingredient => throw _privateConstructorUsedError;
   String get benefit => throw _privateConstructorUsedError;
+  @JsonKey(name: 'source_domain')
+  String get sourceDomain => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -579,7 +615,10 @@ abstract class $GoodIngredientCopyWith<$Res> {
           GoodIngredient value, $Res Function(GoodIngredient) then) =
       _$GoodIngredientCopyWithImpl<$Res, GoodIngredient>;
   @useResult
-  $Res call({String ingredient, String benefit});
+  $Res call(
+      {String ingredient,
+      String benefit,
+      @JsonKey(name: 'source_domain') String sourceDomain});
 }
 
 /// @nodoc
@@ -597,6 +636,7 @@ class _$GoodIngredientCopyWithImpl<$Res, $Val extends GoodIngredient>
   $Res call({
     Object? ingredient = null,
     Object? benefit = null,
+    Object? sourceDomain = null,
   }) {
     return _then(_value.copyWith(
       ingredient: null == ingredient
@@ -606,6 +646,10 @@ class _$GoodIngredientCopyWithImpl<$Res, $Val extends GoodIngredient>
       benefit: null == benefit
           ? _value.benefit
           : benefit // ignore: cast_nullable_to_non_nullable
+              as String,
+      sourceDomain: null == sourceDomain
+          ? _value.sourceDomain
+          : sourceDomain // ignore: cast_nullable_to_non_nullable
               as String,
     ) as $Val);
   }
@@ -619,7 +663,10 @@ abstract class _$$GoodIngredientImplCopyWith<$Res>
       __$$GoodIngredientImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String ingredient, String benefit});
+  $Res call(
+      {String ingredient,
+      String benefit,
+      @JsonKey(name: 'source_domain') String sourceDomain});
 }
 
 /// @nodoc
@@ -635,6 +682,7 @@ class __$$GoodIngredientImplCopyWithImpl<$Res>
   $Res call({
     Object? ingredient = null,
     Object? benefit = null,
+    Object? sourceDomain = null,
   }) {
     return _then(_$GoodIngredientImpl(
       ingredient: null == ingredient
@@ -645,6 +693,10 @@ class __$$GoodIngredientImplCopyWithImpl<$Res>
           ? _value.benefit
           : benefit // ignore: cast_nullable_to_non_nullable
               as String,
+      sourceDomain: null == sourceDomain
+          ? _value.sourceDomain
+          : sourceDomain // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -652,7 +704,10 @@ class __$$GoodIngredientImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$GoodIngredientImpl implements _GoodIngredient {
-  const _$GoodIngredientImpl({required this.ingredient, required this.benefit});
+  const _$GoodIngredientImpl(
+      {required this.ingredient,
+      required this.benefit,
+      @JsonKey(name: 'source_domain') this.sourceDomain = ''});
 
   factory _$GoodIngredientImpl.fromJson(Map<String, dynamic> json) =>
       _$$GoodIngredientImplFromJson(json);
@@ -661,10 +716,13 @@ class _$GoodIngredientImpl implements _GoodIngredient {
   final String ingredient;
   @override
   final String benefit;
+  @override
+  @JsonKey(name: 'source_domain')
+  final String sourceDomain;
 
   @override
   String toString() {
-    return 'GoodIngredient(ingredient: $ingredient, benefit: $benefit)';
+    return 'GoodIngredient(ingredient: $ingredient, benefit: $benefit, sourceDomain: $sourceDomain)';
   }
 
   @override
@@ -674,12 +732,15 @@ class _$GoodIngredientImpl implements _GoodIngredient {
             other is _$GoodIngredientImpl &&
             (identical(other.ingredient, ingredient) ||
                 other.ingredient == ingredient) &&
-            (identical(other.benefit, benefit) || other.benefit == benefit));
+            (identical(other.benefit, benefit) || other.benefit == benefit) &&
+            (identical(other.sourceDomain, sourceDomain) ||
+                other.sourceDomain == sourceDomain));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, ingredient, benefit);
+  int get hashCode =>
+      Object.hash(runtimeType, ingredient, benefit, sourceDomain);
 
   @JsonKey(ignore: true)
   @override
@@ -698,8 +759,10 @@ class _$GoodIngredientImpl implements _GoodIngredient {
 
 abstract class _GoodIngredient implements GoodIngredient {
   const factory _GoodIngredient(
-      {required final String ingredient,
-      required final String benefit}) = _$GoodIngredientImpl;
+          {required final String ingredient,
+          required final String benefit,
+          @JsonKey(name: 'source_domain') final String sourceDomain}) =
+      _$GoodIngredientImpl;
 
   factory _GoodIngredient.fromJson(Map<String, dynamic> json) =
       _$GoodIngredientImpl.fromJson;
@@ -708,6 +771,9 @@ abstract class _GoodIngredient implements GoodIngredient {
   String get ingredient;
   @override
   String get benefit;
+  @override
+  @JsonKey(name: 'source_domain')
+  String get sourceDomain;
   @override
   @JsonKey(ignore: true)
   _$$GoodIngredientImplCopyWith<_$GoodIngredientImpl> get copyWith =>
@@ -884,6 +950,8 @@ mixin _$AnalysisResult {
       throw _privateConstructorUsedError;
   List<Alternative> get alternatives => throw _privateConstructorUsedError;
   String get summary => throw _privateConstructorUsedError;
+  @JsonKey(name: 'sources_used')
+  List<String> get sourcesUsed => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -903,7 +971,8 @@ abstract class $AnalysisResultCopyWith<$Res> {
       List<IngredientIssue> issues,
       @JsonKey(name: 'good_ingredients') List<GoodIngredient> goodIngredients,
       List<Alternative> alternatives,
-      String summary});
+      String summary,
+      @JsonKey(name: 'sources_used') List<String> sourcesUsed});
 }
 
 /// @nodoc
@@ -925,6 +994,7 @@ class _$AnalysisResultCopyWithImpl<$Res, $Val extends AnalysisResult>
     Object? goodIngredients = null,
     Object? alternatives = null,
     Object? summary = null,
+    Object? sourcesUsed = null,
   }) {
     return _then(_value.copyWith(
       healthScore: null == healthScore
@@ -951,6 +1021,10 @@ class _$AnalysisResultCopyWithImpl<$Res, $Val extends AnalysisResult>
           ? _value.summary
           : summary // ignore: cast_nullable_to_non_nullable
               as String,
+      sourcesUsed: null == sourcesUsed
+          ? _value.sourcesUsed
+          : sourcesUsed // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ) as $Val);
   }
 }
@@ -969,7 +1043,8 @@ abstract class _$$AnalysisResultImplCopyWith<$Res>
       List<IngredientIssue> issues,
       @JsonKey(name: 'good_ingredients') List<GoodIngredient> goodIngredients,
       List<Alternative> alternatives,
-      String summary});
+      String summary,
+      @JsonKey(name: 'sources_used') List<String> sourcesUsed});
 }
 
 /// @nodoc
@@ -989,6 +1064,7 @@ class __$$AnalysisResultImplCopyWithImpl<$Res>
     Object? goodIngredients = null,
     Object? alternatives = null,
     Object? summary = null,
+    Object? sourcesUsed = null,
   }) {
     return _then(_$AnalysisResultImpl(
       healthScore: null == healthScore
@@ -1015,6 +1091,10 @@ class __$$AnalysisResultImplCopyWithImpl<$Res>
           ? _value.summary
           : summary // ignore: cast_nullable_to_non_nullable
               as String,
+      sourcesUsed: null == sourcesUsed
+          ? _value._sourcesUsed
+          : sourcesUsed // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -1029,10 +1109,13 @@ class _$AnalysisResultImpl implements _AnalysisResult {
       @JsonKey(name: 'good_ingredients')
       final List<GoodIngredient> goodIngredients = const <GoodIngredient>[],
       final List<Alternative> alternatives = const <Alternative>[],
-      required this.summary})
+      required this.summary,
+      @JsonKey(name: 'sources_used')
+      final List<String> sourcesUsed = const <String>[]})
       : _issues = issues,
         _goodIngredients = goodIngredients,
-        _alternatives = alternatives;
+        _alternatives = alternatives,
+        _sourcesUsed = sourcesUsed;
 
   factory _$AnalysisResultImpl.fromJson(Map<String, dynamic> json) =>
       _$$AnalysisResultImplFromJson(json);
@@ -1072,10 +1155,18 @@ class _$AnalysisResultImpl implements _AnalysisResult {
 
   @override
   final String summary;
+  final List<String> _sourcesUsed;
+  @override
+  @JsonKey(name: 'sources_used')
+  List<String> get sourcesUsed {
+    if (_sourcesUsed is EqualUnmodifiableListView) return _sourcesUsed;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_sourcesUsed);
+  }
 
   @override
   String toString() {
-    return 'AnalysisResult(healthScore: $healthScore, riskLevel: $riskLevel, issues: $issues, goodIngredients: $goodIngredients, alternatives: $alternatives, summary: $summary)';
+    return 'AnalysisResult(healthScore: $healthScore, riskLevel: $riskLevel, issues: $issues, goodIngredients: $goodIngredients, alternatives: $alternatives, summary: $summary, sourcesUsed: $sourcesUsed)';
   }
 
   @override
@@ -1092,7 +1183,9 @@ class _$AnalysisResultImpl implements _AnalysisResult {
                 .equals(other._goodIngredients, _goodIngredients) &&
             const DeepCollectionEquality()
                 .equals(other._alternatives, _alternatives) &&
-            (identical(other.summary, summary) || other.summary == summary));
+            (identical(other.summary, summary) || other.summary == summary) &&
+            const DeepCollectionEquality()
+                .equals(other._sourcesUsed, _sourcesUsed));
   }
 
   @JsonKey(ignore: true)
@@ -1104,7 +1197,8 @@ class _$AnalysisResultImpl implements _AnalysisResult {
       const DeepCollectionEquality().hash(_issues),
       const DeepCollectionEquality().hash(_goodIngredients),
       const DeepCollectionEquality().hash(_alternatives),
-      summary);
+      summary,
+      const DeepCollectionEquality().hash(_sourcesUsed));
 
   @JsonKey(ignore: true)
   @override
@@ -1123,13 +1217,15 @@ class _$AnalysisResultImpl implements _AnalysisResult {
 
 abstract class _AnalysisResult implements AnalysisResult {
   const factory _AnalysisResult(
-      {@JsonKey(name: 'health_score') required final int healthScore,
-      @JsonKey(name: 'risk_level') required final String riskLevel,
-      final List<IngredientIssue> issues,
-      @JsonKey(name: 'good_ingredients')
-      final List<GoodIngredient> goodIngredients,
-      final List<Alternative> alternatives,
-      required final String summary}) = _$AnalysisResultImpl;
+          {@JsonKey(name: 'health_score') required final int healthScore,
+          @JsonKey(name: 'risk_level') required final String riskLevel,
+          final List<IngredientIssue> issues,
+          @JsonKey(name: 'good_ingredients')
+          final List<GoodIngredient> goodIngredients,
+          final List<Alternative> alternatives,
+          required final String summary,
+          @JsonKey(name: 'sources_used') final List<String> sourcesUsed}) =
+      _$AnalysisResultImpl;
 
   factory _AnalysisResult.fromJson(Map<String, dynamic> json) =
       _$AnalysisResultImpl.fromJson;
@@ -1149,6 +1245,9 @@ abstract class _AnalysisResult implements AnalysisResult {
   List<Alternative> get alternatives;
   @override
   String get summary;
+  @override
+  @JsonKey(name: 'sources_used')
+  List<String> get sourcesUsed;
   @override
   @JsonKey(ignore: true)
   _$$AnalysisResultImplCopyWith<_$AnalysisResultImpl> get copyWith =>

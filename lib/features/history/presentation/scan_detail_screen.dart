@@ -8,6 +8,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/utils/share_scan_text.dart';
 import '../../../core/utils/user_facing_error.dart';
 import '../../scan/data/models/scan_models.dart';
+import '../../scan/presentation/widgets/sources_button.dart';
 import '../providers/history_provider.dart';
 
 class ScanDetailScreen extends ConsumerStatefulWidget {
@@ -236,6 +237,7 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen>
                     ),
                   ),
                 ],
+                SourcesButton(sources: analysis.sourcesUsed),
                 const SizedBox(height: 14),
                 Container(
                   width: double.infinity,

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../data/models/scan_models.dart';
 import '../providers/scan_provider.dart';
+import 'widgets/sources_button.dart';
 
 class AnalysisResultScreen extends ConsumerStatefulWidget {
   const AnalysisResultScreen({super.key, this.result});
@@ -59,6 +60,7 @@ class _AnalysisResultScreenState extends ConsumerState<AnalysisResultScreen>
     final issues = analysis?.issues ?? const <IngredientIssue>[];
     final good = analysis?.goodIngredients ?? const <GoodIngredient>[];
     final alternatives = analysis?.alternatives ?? const <Alternative>[];
+    final sourcesUsed = analysis?.sourcesUsed ?? const <String>[];
     final scoreColor = _scoreColor(score);
     final scanId = external?.scanId ?? lastResult?.scanId;
     final heroTag =
@@ -134,7 +136,23 @@ class _AnalysisResultScreenState extends ConsumerState<AnalysisResultScreen>
                       item.ingredient,
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
-                    subtitle: Text(item.reason),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(item.reason),
+                        if (item.sourceDomain.isNotEmpty) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            'Source: ${item.sourceDomain}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primaryOrange,
+                            ),
+                          ),
+                        ]
+                      ],
+                    ),
                     trailing: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
@@ -177,7 +195,23 @@ class _AnalysisResultScreenState extends ConsumerState<AnalysisResultScreen>
                       item.ingredient,
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
-                    subtitle: Text(item.benefit),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(item.benefit),
+                        if (item.sourceDomain.isNotEmpty) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            'Source: ${item.sourceDomain}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.success,
+                            ),
+                          ),
+                        ]
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -211,6 +245,7 @@ class _AnalysisResultScreenState extends ConsumerState<AnalysisResultScreen>
                 ),
               ),
             ],
+            SourcesButton(sources: sourcesUsed),
           ],
         ),
       ),

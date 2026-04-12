@@ -28,6 +28,7 @@ dependencies:
   share_plus: ^10.1.4
   pinput: ^6.0.2
   gauge_indicator: ^0.4.3
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

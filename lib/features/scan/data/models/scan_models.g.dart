@@ -40,6 +40,7 @@ _$IngredientIssueImpl _$$IngredientIssueImplFromJson(
       ingredient: json['ingredient'] as String,
       risk: json['risk'] as String,
       reason: json['reason'] as String,
+      sourceDomain: json['source_domain'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$IngredientIssueImplToJson(
@@ -48,12 +49,14 @@ Map<String, dynamic> _$$IngredientIssueImplToJson(
       'ingredient': instance.ingredient,
       'risk': instance.risk,
       'reason': instance.reason,
+      'source_domain': instance.sourceDomain,
     };
 
 _$GoodIngredientImpl _$$GoodIngredientImplFromJson(Map<String, dynamic> json) =>
     _$GoodIngredientImpl(
       ingredient: json['ingredient'] as String,
       benefit: json['benefit'] as String,
+      sourceDomain: json['source_domain'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$GoodIngredientImplToJson(
@@ -61,6 +64,7 @@ Map<String, dynamic> _$$GoodIngredientImplToJson(
     <String, dynamic>{
       'ingredient': instance.ingredient,
       'benefit': instance.benefit,
+      'source_domain': instance.sourceDomain,
     };
 
 _$AlternativeImpl _$$AlternativeImplFromJson(Map<String, dynamic> json) =>
@@ -92,6 +96,10 @@ _$AnalysisResultImpl _$$AnalysisResultImplFromJson(Map<String, dynamic> json) =>
               .toList() ??
           const <Alternative>[],
       summary: json['summary'] as String,
+      sourcesUsed: (json['sources_used'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const <String>[],
     );
 
 Map<String, dynamic> _$$AnalysisResultImplToJson(
@@ -103,6 +111,7 @@ Map<String, dynamic> _$$AnalysisResultImplToJson(
       'good_ingredients': instance.goodIngredients,
       'alternatives': instance.alternatives,
       'summary': instance.summary,
+      'sources_used': instance.sourcesUsed,
     };
 
 _$AnalyzeResponseImpl _$$AnalyzeResponseImplFromJson(

@@ -35,6 +35,7 @@ class IngredientIssue with _$IngredientIssue {
     required String ingredient,
     required String risk,
     required String reason,
+    @JsonKey(name: 'source_domain') @Default('') String sourceDomain,
   }) = _IngredientIssue;
 
   factory IngredientIssue.fromJson(Map<String, dynamic> json) =>
@@ -46,6 +47,7 @@ class GoodIngredient with _$GoodIngredient {
   const factory GoodIngredient({
     required String ingredient,
     required String benefit,
+    @JsonKey(name: 'source_domain') @Default('') String sourceDomain,
   }) = _GoodIngredient;
 
   factory GoodIngredient.fromJson(Map<String, dynamic> json) =>
@@ -72,6 +74,7 @@ class AnalysisResult with _$AnalysisResult {
     List<GoodIngredient> goodIngredients,
     @Default(<Alternative>[]) List<Alternative> alternatives,
     required String summary,
+    @JsonKey(name: 'sources_used') @Default(<String>[]) List<String> sourcesUsed,
   }) = _AnalysisResult;
 
   factory AnalysisResult.fromJson(Map<String, dynamic> json) =>
