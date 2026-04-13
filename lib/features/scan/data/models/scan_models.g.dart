@@ -79,6 +79,20 @@ Map<String, dynamic> _$$AlternativeImplToJson(_$AlternativeImpl instance) =>
       'reason': instance.reason,
     };
 
+_$UserInsightImpl _$$UserInsightImplFromJson(Map<String, dynamic> json) =>
+    _$UserInsightImpl(
+      impact: json['impact'] as String,
+      title: json['title'] as String,
+      description: json['description'] as String,
+    );
+
+Map<String, dynamic> _$$UserInsightImplToJson(_$UserInsightImpl instance) =>
+    <String, dynamic>{
+      'impact': instance.impact,
+      'title': instance.title,
+      'description': instance.description,
+    };
+
 _$AnalysisResultImpl _$$AnalysisResultImplFromJson(Map<String, dynamic> json) =>
     _$AnalysisResultImpl(
       healthScore: (json['health_score'] as num).toInt(),
@@ -96,6 +110,10 @@ _$AnalysisResultImpl _$$AnalysisResultImplFromJson(Map<String, dynamic> json) =>
               .toList() ??
           const <Alternative>[],
       summary: json['summary'] as String,
+      userInsights: (json['user_insights'] as List<dynamic>?)
+              ?.map((e) => UserInsight.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const <UserInsight>[],
       sourcesUsed: (json['sources_used'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
@@ -111,6 +129,7 @@ Map<String, dynamic> _$$AnalysisResultImplToJson(
       'good_ingredients': instance.goodIngredients,
       'alternatives': instance.alternatives,
       'summary': instance.summary,
+      'user_insights': instance.userInsights,
       'sources_used': instance.sourcesUsed,
     };
 

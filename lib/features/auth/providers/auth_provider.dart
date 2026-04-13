@@ -16,7 +16,10 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 class AuthState with _$AuthState {
   const factory AuthState.unknown() = _Unknown;
   const factory AuthState.otpSent(String email) = _OtpSent;
-  const factory AuthState.authenticated(UserProfile user) = _Authenticated;
+  const factory AuthState.authenticated({
+    required UserProfile user,
+    @Default(false) bool shouldForceOnboarding,
+  }) = _Authenticated;
   const factory AuthState.unauthenticated() = _Unauthenticated;
   const factory AuthState.error(String message) = _Error;
 }
@@ -39,7 +42,7 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
       final loggedIn = await _repo.isLoggedIn();
       if (!loggedIn) return const AuthState.unauthenticated();
       final user = await _repo.getCurrentUser();
-      return AuthState.authenticated(user);
+      return AuthState.authenticated(user: user, shouldForceOnboarding: false);
     } catch (_) {
       return const AuthState.unauthenticated();
     }
@@ -58,12 +61,28 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
   Future<void> verifyOtp(String email, String otp) async {
     state = const AsyncValue.loading();
     try {
-      await _repo.verifyOtp(email, otp);
+      final tokens = await _repo.verifyOtp(email, otp);
       final user = await _repo.getCurrentUser();
-      state = AsyncValue.data(AuthState.authenticated(user));
+      state = AsyncValue.data(AuthState.authenticated(
+        user: user,
+        shouldForceOnboarding: tokens.needsOnboarding,
+      ));
     } catch (e) {
       state = AsyncValue.data(AuthState.error(_messageFrom(e)));
     }
+  }
+
+  Future<void> dismissOnboarding() async {
+    final current = state.valueOrNull;
+    if (current == null) return;
+    current.whenOrNull(
+      authenticated: (user, _) {
+        state = AsyncValue.data(AuthState.authenticated(
+          user: user,
+          shouldForceOnboarding: false,
+        ));
+      },
+    );
   }
 
   Future<void> logout() async {
@@ -85,7 +104,7 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
         return;
       }
       final user = await _repo.getCurrentUser();
-      state = AsyncValue.data(AuthState.authenticated(user));
+      state = AsyncValue.data(AuthState.authenticated(user: user, shouldForceOnboarding: false));
     } catch (_) {
       state = const AsyncValue.data(AuthState.unauthenticated());
     }

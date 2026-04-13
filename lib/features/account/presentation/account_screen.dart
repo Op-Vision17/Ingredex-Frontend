@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../auth/providers/auth_provider.dart';
@@ -58,7 +59,7 @@ class AccountScreen extends ConsumerWidget {
     final historyState = ref.watch(historyProvider);
 
     final user = authState?.maybeWhen(
-      authenticated: (user) => user,
+      authenticated: (user, _) => user,
       orElse: () => null,
     );
     final email = user?.email ?? 'user@example.com';
@@ -166,6 +167,13 @@ class AccountScreen extends ConsumerWidget {
           Card(
             child: Column(
               children: [
+                ListTile(
+                  title: const Text('My Health Profile'),
+                  leading: const Icon(Icons.favorite_border_rounded, color: AppColors.primaryOrange),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.push('/account/profile'),
+                ),
+                const Divider(height: 1),
                 SwitchListTile(
                   value: mode == ThemeMode.dark,
                   onChanged: (v) {

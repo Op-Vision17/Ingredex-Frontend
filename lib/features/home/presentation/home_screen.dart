@@ -8,6 +8,7 @@ import '../../../core/theme/theme_provider.dart';
 import '../../../core/utils/snackbar_service.dart';
 import '../../account/providers/account_provider.dart';
 import '../../auth/providers/auth_provider.dart';
+import 'widgets/profile_onboarding_card.dart';
 import 'widgets/scan_options_card.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -26,10 +27,15 @@ class HomeScreen extends ConsumerWidget {
     final mode = ref.watch(themeProvider);
     final authState = ref.watch(authNotifierProvider).valueOrNull;
     final email = authState?.maybeWhen(
-      authenticated: (user) => user.email,
+      authenticated: (user, _) => user.email,
       orElse: () => null,
     );
     final firstName = _firstNameFromEmail(email);
+    final needsOnboarding = authState?.maybeWhen(
+          authenticated: (user, _) => user.needsOnboarding,
+          orElse: () => false,
+        ) ??
+        false;
 
     return Scaffold(
       appBar: AppBar(
@@ -122,6 +128,10 @@ class HomeScreen extends ConsumerWidget {
                 ],
               ),
             ),
+            if (needsOnboarding) ...[
+              const SizedBox(height: 18),
+              const ProfileOnboardingCard(),
+            ],
             const SizedBox(height: 18),
             Text(
               'Scan options',

@@ -323,6 +323,8 @@ mixin _$AuthTokens {
   int get accessTokenExpiresIn => throw _privateConstructorUsedError;
   @JsonKey(name: 'is_new_user')
   bool? get isNewUser => throw _privateConstructorUsedError;
+  @JsonKey(name: 'needs_onboarding')
+  bool get needsOnboarding => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -341,7 +343,8 @@ abstract class $AuthTokensCopyWith<$Res> {
       @JsonKey(name: 'refresh_token') String refreshToken,
       @JsonKey(name: 'token_type') String tokenType,
       @JsonKey(name: 'access_token_expires_in') int accessTokenExpiresIn,
-      @JsonKey(name: 'is_new_user') bool? isNewUser});
+      @JsonKey(name: 'is_new_user') bool? isNewUser,
+      @JsonKey(name: 'needs_onboarding') bool needsOnboarding});
 }
 
 /// @nodoc
@@ -362,6 +365,7 @@ class _$AuthTokensCopyWithImpl<$Res, $Val extends AuthTokens>
     Object? tokenType = null,
     Object? accessTokenExpiresIn = null,
     Object? isNewUser = freezed,
+    Object? needsOnboarding = null,
   }) {
     return _then(_value.copyWith(
       accessToken: null == accessToken
@@ -384,6 +388,10 @@ class _$AuthTokensCopyWithImpl<$Res, $Val extends AuthTokens>
           ? _value.isNewUser
           : isNewUser // ignore: cast_nullable_to_non_nullable
               as bool?,
+      needsOnboarding: null == needsOnboarding
+          ? _value.needsOnboarding
+          : needsOnboarding // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -401,7 +409,8 @@ abstract class _$$AuthTokensImplCopyWith<$Res>
       @JsonKey(name: 'refresh_token') String refreshToken,
       @JsonKey(name: 'token_type') String tokenType,
       @JsonKey(name: 'access_token_expires_in') int accessTokenExpiresIn,
-      @JsonKey(name: 'is_new_user') bool? isNewUser});
+      @JsonKey(name: 'is_new_user') bool? isNewUser,
+      @JsonKey(name: 'needs_onboarding') bool needsOnboarding});
 }
 
 /// @nodoc
@@ -420,6 +429,7 @@ class __$$AuthTokensImplCopyWithImpl<$Res>
     Object? tokenType = null,
     Object? accessTokenExpiresIn = null,
     Object? isNewUser = freezed,
+    Object? needsOnboarding = null,
   }) {
     return _then(_$AuthTokensImpl(
       accessToken: null == accessToken
@@ -442,6 +452,10 @@ class __$$AuthTokensImplCopyWithImpl<$Res>
           ? _value.isNewUser
           : isNewUser // ignore: cast_nullable_to_non_nullable
               as bool?,
+      needsOnboarding: null == needsOnboarding
+          ? _value.needsOnboarding
+          : needsOnboarding // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -455,7 +469,8 @@ class _$AuthTokensImpl implements _AuthTokens {
       @JsonKey(name: 'token_type') this.tokenType = 'bearer',
       @JsonKey(name: 'access_token_expires_in')
       required this.accessTokenExpiresIn,
-      @JsonKey(name: 'is_new_user') this.isNewUser});
+      @JsonKey(name: 'is_new_user') this.isNewUser,
+      @JsonKey(name: 'needs_onboarding') this.needsOnboarding = false});
 
   factory _$AuthTokensImpl.fromJson(Map<String, dynamic> json) =>
       _$$AuthTokensImplFromJson(json);
@@ -475,10 +490,13 @@ class _$AuthTokensImpl implements _AuthTokens {
   @override
   @JsonKey(name: 'is_new_user')
   final bool? isNewUser;
+  @override
+  @JsonKey(name: 'needs_onboarding')
+  final bool needsOnboarding;
 
   @override
   String toString() {
-    return 'AuthTokens(accessToken: $accessToken, refreshToken: $refreshToken, tokenType: $tokenType, accessTokenExpiresIn: $accessTokenExpiresIn, isNewUser: $isNewUser)';
+    return 'AuthTokens(accessToken: $accessToken, refreshToken: $refreshToken, tokenType: $tokenType, accessTokenExpiresIn: $accessTokenExpiresIn, isNewUser: $isNewUser, needsOnboarding: $needsOnboarding)';
   }
 
   @override
@@ -495,13 +513,15 @@ class _$AuthTokensImpl implements _AuthTokens {
             (identical(other.accessTokenExpiresIn, accessTokenExpiresIn) ||
                 other.accessTokenExpiresIn == accessTokenExpiresIn) &&
             (identical(other.isNewUser, isNewUser) ||
-                other.isNewUser == isNewUser));
+                other.isNewUser == isNewUser) &&
+            (identical(other.needsOnboarding, needsOnboarding) ||
+                other.needsOnboarding == needsOnboarding));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, accessToken, refreshToken,
-      tokenType, accessTokenExpiresIn, isNewUser);
+      tokenType, accessTokenExpiresIn, isNewUser, needsOnboarding);
 
   @JsonKey(ignore: true)
   @override
@@ -519,12 +539,14 @@ class _$AuthTokensImpl implements _AuthTokens {
 
 abstract class _AuthTokens implements AuthTokens {
   const factory _AuthTokens(
-      {@JsonKey(name: 'access_token') required final String accessToken,
-      @JsonKey(name: 'refresh_token') required final String refreshToken,
-      @JsonKey(name: 'token_type') final String tokenType,
-      @JsonKey(name: 'access_token_expires_in')
-      required final int accessTokenExpiresIn,
-      @JsonKey(name: 'is_new_user') final bool? isNewUser}) = _$AuthTokensImpl;
+          {@JsonKey(name: 'access_token') required final String accessToken,
+          @JsonKey(name: 'refresh_token') required final String refreshToken,
+          @JsonKey(name: 'token_type') final String tokenType,
+          @JsonKey(name: 'access_token_expires_in')
+          required final int accessTokenExpiresIn,
+          @JsonKey(name: 'is_new_user') final bool? isNewUser,
+          @JsonKey(name: 'needs_onboarding') final bool needsOnboarding}) =
+      _$AuthTokensImpl;
 
   factory _AuthTokens.fromJson(Map<String, dynamic> json) =
       _$AuthTokensImpl.fromJson;
@@ -545,6 +567,9 @@ abstract class _AuthTokens implements AuthTokens {
   @JsonKey(name: 'is_new_user')
   bool? get isNewUser;
   @override
+  @JsonKey(name: 'needs_onboarding')
+  bool get needsOnboarding;
+  @override
   @JsonKey(ignore: true)
   _$$AuthTokensImplCopyWith<_$AuthTokensImpl> get copyWith =>
       throw _privateConstructorUsedError;
@@ -560,6 +585,8 @@ mixin _$UserProfile {
   String? get email => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   String get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'needs_onboarding')
+  bool get needsOnboarding => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -576,7 +603,8 @@ abstract class $UserProfileCopyWith<$Res> {
   $Res call(
       {String id,
       String? email,
-      @JsonKey(name: 'created_at') String createdAt});
+      @JsonKey(name: 'created_at') String createdAt,
+      @JsonKey(name: 'needs_onboarding') bool needsOnboarding});
 }
 
 /// @nodoc
@@ -595,6 +623,7 @@ class _$UserProfileCopyWithImpl<$Res, $Val extends UserProfile>
     Object? id = null,
     Object? email = freezed,
     Object? createdAt = null,
+    Object? needsOnboarding = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -609,6 +638,10 @@ class _$UserProfileCopyWithImpl<$Res, $Val extends UserProfile>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as String,
+      needsOnboarding: null == needsOnboarding
+          ? _value.needsOnboarding
+          : needsOnboarding // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -624,7 +657,8 @@ abstract class _$$UserProfileImplCopyWith<$Res>
   $Res call(
       {String id,
       String? email,
-      @JsonKey(name: 'created_at') String createdAt});
+      @JsonKey(name: 'created_at') String createdAt,
+      @JsonKey(name: 'needs_onboarding') bool needsOnboarding});
 }
 
 /// @nodoc
@@ -641,6 +675,7 @@ class __$$UserProfileImplCopyWithImpl<$Res>
     Object? id = null,
     Object? email = freezed,
     Object? createdAt = null,
+    Object? needsOnboarding = null,
   }) {
     return _then(_$UserProfileImpl(
       id: null == id
@@ -655,6 +690,10 @@ class __$$UserProfileImplCopyWithImpl<$Res>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as String,
+      needsOnboarding: null == needsOnboarding
+          ? _value.needsOnboarding
+          : needsOnboarding // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -665,7 +704,8 @@ class _$UserProfileImpl implements _UserProfile {
   const _$UserProfileImpl(
       {required this.id,
       this.email,
-      @JsonKey(name: 'created_at') required this.createdAt});
+      @JsonKey(name: 'created_at') required this.createdAt,
+      @JsonKey(name: 'needs_onboarding') this.needsOnboarding = false});
 
   factory _$UserProfileImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserProfileImplFromJson(json);
@@ -677,10 +717,13 @@ class _$UserProfileImpl implements _UserProfile {
   @override
   @JsonKey(name: 'created_at')
   final String createdAt;
+  @override
+  @JsonKey(name: 'needs_onboarding')
+  final bool needsOnboarding;
 
   @override
   String toString() {
-    return 'UserProfile(id: $id, email: $email, createdAt: $createdAt)';
+    return 'UserProfile(id: $id, email: $email, createdAt: $createdAt, needsOnboarding: $needsOnboarding)';
   }
 
   @override
@@ -691,12 +734,15 @@ class _$UserProfileImpl implements _UserProfile {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.needsOnboarding, needsOnboarding) ||
+                other.needsOnboarding == needsOnboarding));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, email, createdAt);
+  int get hashCode =>
+      Object.hash(runtimeType, id, email, createdAt, needsOnboarding);
 
   @JsonKey(ignore: true)
   @override
@@ -716,7 +762,8 @@ abstract class _UserProfile implements UserProfile {
   const factory _UserProfile(
           {required final String id,
           final String? email,
-          @JsonKey(name: 'created_at') required final String createdAt}) =
+          @JsonKey(name: 'created_at') required final String createdAt,
+          @JsonKey(name: 'needs_onboarding') final bool needsOnboarding}) =
       _$UserProfileImpl;
 
   factory _UserProfile.fromJson(Map<String, dynamic> json) =
@@ -729,6 +776,9 @@ abstract class _UserProfile implements UserProfile {
   @override
   @JsonKey(name: 'created_at')
   String get createdAt;
+  @override
+  @JsonKey(name: 'needs_onboarding')
+  bool get needsOnboarding;
   @override
   @JsonKey(ignore: true)
   _$$UserProfileImplCopyWith<_$UserProfileImpl> get copyWith =>

@@ -20,7 +20,8 @@ mixin _$AuthState {
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
     required TResult Function(String email) otpSent,
-    required TResult Function(UserProfile user) authenticated,
+    required TResult Function(UserProfile user, bool shouldForceOnboarding)
+        authenticated,
     required TResult Function() unauthenticated,
     required TResult Function(String message) error,
   }) =>
@@ -29,7 +30,8 @@ mixin _$AuthState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function(String email)? otpSent,
-    TResult? Function(UserProfile user)? authenticated,
+    TResult? Function(UserProfile user, bool shouldForceOnboarding)?
+        authenticated,
     TResult? Function()? unauthenticated,
     TResult? Function(String message)? error,
   }) =>
@@ -38,7 +40,8 @@ mixin _$AuthState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
     TResult Function(String email)? otpSent,
-    TResult Function(UserProfile user)? authenticated,
+    TResult Function(UserProfile user, bool shouldForceOnboarding)?
+        authenticated,
     TResult Function()? unauthenticated,
     TResult Function(String message)? error,
     required TResult orElse(),
@@ -131,7 +134,8 @@ class _$UnknownImpl implements _Unknown {
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
     required TResult Function(String email) otpSent,
-    required TResult Function(UserProfile user) authenticated,
+    required TResult Function(UserProfile user, bool shouldForceOnboarding)
+        authenticated,
     required TResult Function() unauthenticated,
     required TResult Function(String message) error,
   }) {
@@ -143,7 +147,8 @@ class _$UnknownImpl implements _Unknown {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function(String email)? otpSent,
-    TResult? Function(UserProfile user)? authenticated,
+    TResult? Function(UserProfile user, bool shouldForceOnboarding)?
+        authenticated,
     TResult? Function()? unauthenticated,
     TResult? Function(String message)? error,
   }) {
@@ -155,7 +160,8 @@ class _$UnknownImpl implements _Unknown {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
     TResult Function(String email)? otpSent,
-    TResult Function(UserProfile user)? authenticated,
+    TResult Function(UserProfile user, bool shouldForceOnboarding)?
+        authenticated,
     TResult Function()? unauthenticated,
     TResult Function(String message)? error,
     required TResult orElse(),
@@ -277,7 +283,8 @@ class _$OtpSentImpl implements _OtpSent {
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
     required TResult Function(String email) otpSent,
-    required TResult Function(UserProfile user) authenticated,
+    required TResult Function(UserProfile user, bool shouldForceOnboarding)
+        authenticated,
     required TResult Function() unauthenticated,
     required TResult Function(String message) error,
   }) {
@@ -289,7 +296,8 @@ class _$OtpSentImpl implements _OtpSent {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function(String email)? otpSent,
-    TResult? Function(UserProfile user)? authenticated,
+    TResult? Function(UserProfile user, bool shouldForceOnboarding)?
+        authenticated,
     TResult? Function()? unauthenticated,
     TResult? Function(String message)? error,
   }) {
@@ -301,7 +309,8 @@ class _$OtpSentImpl implements _OtpSent {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
     TResult Function(String email)? otpSent,
-    TResult Function(UserProfile user)? authenticated,
+    TResult Function(UserProfile user, bool shouldForceOnboarding)?
+        authenticated,
     TResult Function()? unauthenticated,
     TResult Function(String message)? error,
     required TResult orElse(),
@@ -368,7 +377,7 @@ abstract class _$$AuthenticatedImplCopyWith<$Res> {
           _$AuthenticatedImpl value, $Res Function(_$AuthenticatedImpl) then) =
       __$$AuthenticatedImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({UserProfile user});
+  $Res call({UserProfile user, bool shouldForceOnboarding});
 
   $UserProfileCopyWith<$Res> get user;
 }
@@ -385,12 +394,17 @@ class __$$AuthenticatedImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? user = null,
+    Object? shouldForceOnboarding = null,
   }) {
     return _then(_$AuthenticatedImpl(
-      null == user
+      user: null == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
               as UserProfile,
+      shouldForceOnboarding: null == shouldForceOnboarding
+          ? _value.shouldForceOnboarding
+          : shouldForceOnboarding // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 
@@ -406,14 +420,18 @@ class __$$AuthenticatedImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$AuthenticatedImpl implements _Authenticated {
-  const _$AuthenticatedImpl(this.user);
+  const _$AuthenticatedImpl(
+      {required this.user, this.shouldForceOnboarding = false});
 
   @override
   final UserProfile user;
+  @override
+  @JsonKey()
+  final bool shouldForceOnboarding;
 
   @override
   String toString() {
-    return 'AuthState.authenticated(user: $user)';
+    return 'AuthState.authenticated(user: $user, shouldForceOnboarding: $shouldForceOnboarding)';
   }
 
   @override
@@ -421,11 +439,13 @@ class _$AuthenticatedImpl implements _Authenticated {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$AuthenticatedImpl &&
-            (identical(other.user, user) || other.user == user));
+            (identical(other.user, user) || other.user == user) &&
+            (identical(other.shouldForceOnboarding, shouldForceOnboarding) ||
+                other.shouldForceOnboarding == shouldForceOnboarding));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, user);
+  int get hashCode => Object.hash(runtimeType, user, shouldForceOnboarding);
 
   @JsonKey(ignore: true)
   @override
@@ -438,11 +458,12 @@ class _$AuthenticatedImpl implements _Authenticated {
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
     required TResult Function(String email) otpSent,
-    required TResult Function(UserProfile user) authenticated,
+    required TResult Function(UserProfile user, bool shouldForceOnboarding)
+        authenticated,
     required TResult Function() unauthenticated,
     required TResult Function(String message) error,
   }) {
-    return authenticated(user);
+    return authenticated(user, shouldForceOnboarding);
   }
 
   @override
@@ -450,11 +471,12 @@ class _$AuthenticatedImpl implements _Authenticated {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function(String email)? otpSent,
-    TResult? Function(UserProfile user)? authenticated,
+    TResult? Function(UserProfile user, bool shouldForceOnboarding)?
+        authenticated,
     TResult? Function()? unauthenticated,
     TResult? Function(String message)? error,
   }) {
-    return authenticated?.call(user);
+    return authenticated?.call(user, shouldForceOnboarding);
   }
 
   @override
@@ -462,13 +484,14 @@ class _$AuthenticatedImpl implements _Authenticated {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
     TResult Function(String email)? otpSent,
-    TResult Function(UserProfile user)? authenticated,
+    TResult Function(UserProfile user, bool shouldForceOnboarding)?
+        authenticated,
     TResult Function()? unauthenticated,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
     if (authenticated != null) {
-      return authenticated(user);
+      return authenticated(user, shouldForceOnboarding);
     }
     return orElse();
   }
@@ -515,9 +538,12 @@ class _$AuthenticatedImpl implements _Authenticated {
 }
 
 abstract class _Authenticated implements AuthState {
-  const factory _Authenticated(final UserProfile user) = _$AuthenticatedImpl;
+  const factory _Authenticated(
+      {required final UserProfile user,
+      final bool shouldForceOnboarding}) = _$AuthenticatedImpl;
 
   UserProfile get user;
+  bool get shouldForceOnboarding;
   @JsonKey(ignore: true)
   _$$AuthenticatedImplCopyWith<_$AuthenticatedImpl> get copyWith =>
       throw _privateConstructorUsedError;
@@ -563,7 +589,8 @@ class _$UnauthenticatedImpl implements _Unauthenticated {
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
     required TResult Function(String email) otpSent,
-    required TResult Function(UserProfile user) authenticated,
+    required TResult Function(UserProfile user, bool shouldForceOnboarding)
+        authenticated,
     required TResult Function() unauthenticated,
     required TResult Function(String message) error,
   }) {
@@ -575,7 +602,8 @@ class _$UnauthenticatedImpl implements _Unauthenticated {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function(String email)? otpSent,
-    TResult? Function(UserProfile user)? authenticated,
+    TResult? Function(UserProfile user, bool shouldForceOnboarding)?
+        authenticated,
     TResult? Function()? unauthenticated,
     TResult? Function(String message)? error,
   }) {
@@ -587,7 +615,8 @@ class _$UnauthenticatedImpl implements _Unauthenticated {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
     TResult Function(String email)? otpSent,
-    TResult Function(UserProfile user)? authenticated,
+    TResult Function(UserProfile user, bool shouldForceOnboarding)?
+        authenticated,
     TResult Function()? unauthenticated,
     TResult Function(String message)? error,
     required TResult orElse(),
@@ -709,7 +738,8 @@ class _$ErrorImpl implements _Error {
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
     required TResult Function(String email) otpSent,
-    required TResult Function(UserProfile user) authenticated,
+    required TResult Function(UserProfile user, bool shouldForceOnboarding)
+        authenticated,
     required TResult Function() unauthenticated,
     required TResult Function(String message) error,
   }) {
@@ -721,7 +751,8 @@ class _$ErrorImpl implements _Error {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function(String email)? otpSent,
-    TResult? Function(UserProfile user)? authenticated,
+    TResult? Function(UserProfile user, bool shouldForceOnboarding)?
+        authenticated,
     TResult? Function()? unauthenticated,
     TResult? Function(String message)? error,
   }) {
@@ -733,7 +764,8 @@ class _$ErrorImpl implements _Error {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
     TResult Function(String email)? otpSent,
-    TResult Function(UserProfile user)? authenticated,
+    TResult Function(UserProfile user, bool shouldForceOnboarding)?
+        authenticated,
     TResult Function()? unauthenticated,
     TResult Function(String message)? error,
     required TResult orElse(),

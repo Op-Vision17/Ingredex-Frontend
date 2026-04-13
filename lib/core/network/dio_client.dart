@@ -53,6 +53,10 @@ class DioClient {
     return _dio.post(path, data: data, options: options);
   }
 
+  Future<Response<dynamic>> put(String path, {dynamic data, Options? options}) {
+    return _dio.put(path, data: data, options: options);
+  }
+
   Future<Response<dynamic>> postMultipart(String path, FormData formData) {
     return _dio.post(
       path,

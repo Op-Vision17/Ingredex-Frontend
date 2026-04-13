@@ -44,7 +44,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
           data: (state) => state.when(
             unknown: () {},
             otpSent: (_) {},
-            authenticated: (_) {},
+            authenticated: (_, __) {},
             unauthenticated: () {},
             error: (message) {
               if (!mounted) return;

@@ -9,6 +9,7 @@ import '../../../core/utils/share_scan_text.dart';
 import '../../../core/utils/user_facing_error.dart';
 import '../../scan/data/models/scan_models.dart';
 import '../../scan/presentation/widgets/sources_button.dart';
+import '../../scan/presentation/widgets/user_insights_card.dart';
 import '../providers/history_provider.dart';
 
 class ScanDetailScreen extends ConsumerStatefulWidget {
@@ -128,6 +129,8 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen>
                     child: Text(analysis.summary),
                   ),
                 ),
+                const SizedBox(height: 16),
+                UserInsightsCard(insights: analysis.userInsights),
                 if (analysis.issues.isNotEmpty) ...[
                   const SizedBox(height: 14),
                   Row(

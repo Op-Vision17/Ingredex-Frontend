@@ -34,6 +34,7 @@ class AuthTokens with _$AuthTokens {
     @JsonKey(name: 'token_type') @Default('bearer') String tokenType,
     @JsonKey(name: 'access_token_expires_in') required int accessTokenExpiresIn,
     @JsonKey(name: 'is_new_user') bool? isNewUser,
+    @JsonKey(name: 'needs_onboarding') @Default(false) bool needsOnboarding,
   }) = _AuthTokens;
 
   factory AuthTokens.fromJson(Map<String, dynamic> json) =>
@@ -46,6 +47,7 @@ class UserProfile with _$UserProfile {
     required String id,
     String? email,
     @JsonKey(name: 'created_at') required String createdAt,
+    @JsonKey(name: 'needs_onboarding') @Default(false) bool needsOnboarding,
   }) = _UserProfile;
 
   factory UserProfile.fromJson(Map<String, dynamic> json) =>

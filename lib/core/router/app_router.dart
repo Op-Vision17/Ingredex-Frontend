@@ -9,6 +9,7 @@ import '../../features/auth/presentation/otp_screen.dart';
 import '../../features/history/presentation/history_screen.dart';
 import '../../features/history/presentation/scan_detail_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
+import '../../features/profile/presentation/health_profile_screen.dart';
 import '../../features/scan/presentation/analysis_result_screen.dart';
 import '../../features/scan/presentation/barcode_scan_screen.dart';
 import '../../features/scan/presentation/manual_entry_screen.dart';
@@ -47,14 +48,25 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       }
 
       final isAuthenticated = authState.maybeWhen(
-        authenticated: (_) => true,
+        authenticated: (_, __) => true,
+        orElse: () => false,
+      );
+      final shouldForceOnboarding = authState.maybeWhen(
+        authenticated: (_, force) => force,
         orElse: () => false,
       );
       final isAuthPage = path == '/login' || path.startsWith('/otp/');
 
       if (path == '/splash') {
-        if (isAuthenticated) return '/home';
+        if (isAuthenticated) {
+          if (shouldForceOnboarding) return '/onboarding';
+          return '/home';
+        }
         return '/login';
+      }
+
+      if (isAuthenticated && shouldForceOnboarding && path != '/onboarding') {
+        return '/onboarding';
       }
 
       if (!isAuthenticated && !isAuthPage) return '/login';
@@ -116,6 +128,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/account',
                 builder: (context, state) => const AccountScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'profile',
+                    builder: (context, state) => const HealthProfileScreen(),
+                  ),
+                ],
               ),
             ],
           ),
@@ -133,9 +151,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/scan/manual',
         builder: (context, state) => const ManualEntryScreen(),
       ),
-      GoRoute(
+       GoRoute(
         path: '/result',
         builder: (context, state) => AnalysisResultScreen(result: state.extra),
+      ),
+      GoRoute(
+        path: '/onboarding',
+        builder: (context, state) => const HealthProfileScreen(isOnboarding: true),
       ),
     ],
   );

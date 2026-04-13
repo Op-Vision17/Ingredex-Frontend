@@ -934,6 +934,179 @@ abstract class _Alternative implements Alternative {
       throw _privateConstructorUsedError;
 }
 
+UserInsight _$UserInsightFromJson(Map<String, dynamic> json) {
+  return _UserInsight.fromJson(json);
+}
+
+/// @nodoc
+mixin _$UserInsight {
+  String get impact => throw _privateConstructorUsedError;
+  String get title => throw _privateConstructorUsedError;
+  String get description => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $UserInsightCopyWith<UserInsight> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $UserInsightCopyWith<$Res> {
+  factory $UserInsightCopyWith(
+          UserInsight value, $Res Function(UserInsight) then) =
+      _$UserInsightCopyWithImpl<$Res, UserInsight>;
+  @useResult
+  $Res call({String impact, String title, String description});
+}
+
+/// @nodoc
+class _$UserInsightCopyWithImpl<$Res, $Val extends UserInsight>
+    implements $UserInsightCopyWith<$Res> {
+  _$UserInsightCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? impact = null,
+    Object? title = null,
+    Object? description = null,
+  }) {
+    return _then(_value.copyWith(
+      impact: null == impact
+          ? _value.impact
+          : impact // ignore: cast_nullable_to_non_nullable
+              as String,
+      title: null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$UserInsightImplCopyWith<$Res>
+    implements $UserInsightCopyWith<$Res> {
+  factory _$$UserInsightImplCopyWith(
+          _$UserInsightImpl value, $Res Function(_$UserInsightImpl) then) =
+      __$$UserInsightImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String impact, String title, String description});
+}
+
+/// @nodoc
+class __$$UserInsightImplCopyWithImpl<$Res>
+    extends _$UserInsightCopyWithImpl<$Res, _$UserInsightImpl>
+    implements _$$UserInsightImplCopyWith<$Res> {
+  __$$UserInsightImplCopyWithImpl(
+      _$UserInsightImpl _value, $Res Function(_$UserInsightImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? impact = null,
+    Object? title = null,
+    Object? description = null,
+  }) {
+    return _then(_$UserInsightImpl(
+      impact: null == impact
+          ? _value.impact
+          : impact // ignore: cast_nullable_to_non_nullable
+              as String,
+      title: null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$UserInsightImpl implements _UserInsight {
+  const _$UserInsightImpl(
+      {required this.impact, required this.title, required this.description});
+
+  factory _$UserInsightImpl.fromJson(Map<String, dynamic> json) =>
+      _$$UserInsightImplFromJson(json);
+
+  @override
+  final String impact;
+  @override
+  final String title;
+  @override
+  final String description;
+
+  @override
+  String toString() {
+    return 'UserInsight(impact: $impact, title: $title, description: $description)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$UserInsightImpl &&
+            (identical(other.impact, impact) || other.impact == impact) &&
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.description, description) ||
+                other.description == description));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, impact, title, description);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$UserInsightImplCopyWith<_$UserInsightImpl> get copyWith =>
+      __$$UserInsightImplCopyWithImpl<_$UserInsightImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$UserInsightImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _UserInsight implements UserInsight {
+  const factory _UserInsight(
+      {required final String impact,
+      required final String title,
+      required final String description}) = _$UserInsightImpl;
+
+  factory _UserInsight.fromJson(Map<String, dynamic> json) =
+      _$UserInsightImpl.fromJson;
+
+  @override
+  String get impact;
+  @override
+  String get title;
+  @override
+  String get description;
+  @override
+  @JsonKey(ignore: true)
+  _$$UserInsightImplCopyWith<_$UserInsightImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
 AnalysisResult _$AnalysisResultFromJson(Map<String, dynamic> json) {
   return _AnalysisResult.fromJson(json);
 }
@@ -950,6 +1123,8 @@ mixin _$AnalysisResult {
       throw _privateConstructorUsedError;
   List<Alternative> get alternatives => throw _privateConstructorUsedError;
   String get summary => throw _privateConstructorUsedError;
+  @JsonKey(name: 'user_insights')
+  List<UserInsight> get userInsights => throw _privateConstructorUsedError;
   @JsonKey(name: 'sources_used')
   List<String> get sourcesUsed => throw _privateConstructorUsedError;
 
@@ -972,6 +1147,7 @@ abstract class $AnalysisResultCopyWith<$Res> {
       @JsonKey(name: 'good_ingredients') List<GoodIngredient> goodIngredients,
       List<Alternative> alternatives,
       String summary,
+      @JsonKey(name: 'user_insights') List<UserInsight> userInsights,
       @JsonKey(name: 'sources_used') List<String> sourcesUsed});
 }
 
@@ -994,6 +1170,7 @@ class _$AnalysisResultCopyWithImpl<$Res, $Val extends AnalysisResult>
     Object? goodIngredients = null,
     Object? alternatives = null,
     Object? summary = null,
+    Object? userInsights = null,
     Object? sourcesUsed = null,
   }) {
     return _then(_value.copyWith(
@@ -1021,6 +1198,10 @@ class _$AnalysisResultCopyWithImpl<$Res, $Val extends AnalysisResult>
           ? _value.summary
           : summary // ignore: cast_nullable_to_non_nullable
               as String,
+      userInsights: null == userInsights
+          ? _value.userInsights
+          : userInsights // ignore: cast_nullable_to_non_nullable
+              as List<UserInsight>,
       sourcesUsed: null == sourcesUsed
           ? _value.sourcesUsed
           : sourcesUsed // ignore: cast_nullable_to_non_nullable
@@ -1044,6 +1225,7 @@ abstract class _$$AnalysisResultImplCopyWith<$Res>
       @JsonKey(name: 'good_ingredients') List<GoodIngredient> goodIngredients,
       List<Alternative> alternatives,
       String summary,
+      @JsonKey(name: 'user_insights') List<UserInsight> userInsights,
       @JsonKey(name: 'sources_used') List<String> sourcesUsed});
 }
 
@@ -1064,6 +1246,7 @@ class __$$AnalysisResultImplCopyWithImpl<$Res>
     Object? goodIngredients = null,
     Object? alternatives = null,
     Object? summary = null,
+    Object? userInsights = null,
     Object? sourcesUsed = null,
   }) {
     return _then(_$AnalysisResultImpl(
@@ -1091,6 +1274,10 @@ class __$$AnalysisResultImplCopyWithImpl<$Res>
           ? _value.summary
           : summary // ignore: cast_nullable_to_non_nullable
               as String,
+      userInsights: null == userInsights
+          ? _value._userInsights
+          : userInsights // ignore: cast_nullable_to_non_nullable
+              as List<UserInsight>,
       sourcesUsed: null == sourcesUsed
           ? _value._sourcesUsed
           : sourcesUsed // ignore: cast_nullable_to_non_nullable
@@ -1110,11 +1297,14 @@ class _$AnalysisResultImpl implements _AnalysisResult {
       final List<GoodIngredient> goodIngredients = const <GoodIngredient>[],
       final List<Alternative> alternatives = const <Alternative>[],
       required this.summary,
+      @JsonKey(name: 'user_insights')
+      final List<UserInsight> userInsights = const <UserInsight>[],
       @JsonKey(name: 'sources_used')
       final List<String> sourcesUsed = const <String>[]})
       : _issues = issues,
         _goodIngredients = goodIngredients,
         _alternatives = alternatives,
+        _userInsights = userInsights,
         _sourcesUsed = sourcesUsed;
 
   factory _$AnalysisResultImpl.fromJson(Map<String, dynamic> json) =>
@@ -1155,6 +1345,15 @@ class _$AnalysisResultImpl implements _AnalysisResult {
 
   @override
   final String summary;
+  final List<UserInsight> _userInsights;
+  @override
+  @JsonKey(name: 'user_insights')
+  List<UserInsight> get userInsights {
+    if (_userInsights is EqualUnmodifiableListView) return _userInsights;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_userInsights);
+  }
+
   final List<String> _sourcesUsed;
   @override
   @JsonKey(name: 'sources_used')
@@ -1166,7 +1365,7 @@ class _$AnalysisResultImpl implements _AnalysisResult {
 
   @override
   String toString() {
-    return 'AnalysisResult(healthScore: $healthScore, riskLevel: $riskLevel, issues: $issues, goodIngredients: $goodIngredients, alternatives: $alternatives, summary: $summary, sourcesUsed: $sourcesUsed)';
+    return 'AnalysisResult(healthScore: $healthScore, riskLevel: $riskLevel, issues: $issues, goodIngredients: $goodIngredients, alternatives: $alternatives, summary: $summary, userInsights: $userInsights, sourcesUsed: $sourcesUsed)';
   }
 
   @override
@@ -1185,6 +1384,8 @@ class _$AnalysisResultImpl implements _AnalysisResult {
                 .equals(other._alternatives, _alternatives) &&
             (identical(other.summary, summary) || other.summary == summary) &&
             const DeepCollectionEquality()
+                .equals(other._userInsights, _userInsights) &&
+            const DeepCollectionEquality()
                 .equals(other._sourcesUsed, _sourcesUsed));
   }
 
@@ -1198,6 +1399,7 @@ class _$AnalysisResultImpl implements _AnalysisResult {
       const DeepCollectionEquality().hash(_goodIngredients),
       const DeepCollectionEquality().hash(_alternatives),
       summary,
+      const DeepCollectionEquality().hash(_userInsights),
       const DeepCollectionEquality().hash(_sourcesUsed));
 
   @JsonKey(ignore: true)
@@ -1224,6 +1426,7 @@ abstract class _AnalysisResult implements AnalysisResult {
           final List<GoodIngredient> goodIngredients,
           final List<Alternative> alternatives,
           required final String summary,
+          @JsonKey(name: 'user_insights') final List<UserInsight> userInsights,
           @JsonKey(name: 'sources_used') final List<String> sourcesUsed}) =
       _$AnalysisResultImpl;
 
@@ -1245,6 +1448,9 @@ abstract class _AnalysisResult implements AnalysisResult {
   List<Alternative> get alternatives;
   @override
   String get summary;
+  @override
+  @JsonKey(name: 'user_insights')
+  List<UserInsight> get userInsights;
   @override
   @JsonKey(name: 'sources_used')
   List<String> get sourcesUsed;

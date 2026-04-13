@@ -38,6 +38,7 @@ _$AuthTokensImpl _$$AuthTokensImplFromJson(Map<String, dynamic> json) =>
       tokenType: json['token_type'] as String? ?? 'bearer',
       accessTokenExpiresIn: (json['access_token_expires_in'] as num).toInt(),
       isNewUser: json['is_new_user'] as bool?,
+      needsOnboarding: json['needs_onboarding'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$AuthTokensImplToJson(_$AuthTokensImpl instance) =>
@@ -47,6 +48,7 @@ Map<String, dynamic> _$$AuthTokensImplToJson(_$AuthTokensImpl instance) =>
       'token_type': instance.tokenType,
       'access_token_expires_in': instance.accessTokenExpiresIn,
       'is_new_user': instance.isNewUser,
+      'needs_onboarding': instance.needsOnboarding,
     };
 
 _$UserProfileImpl _$$UserProfileImplFromJson(Map<String, dynamic> json) =>
@@ -54,6 +56,7 @@ _$UserProfileImpl _$$UserProfileImplFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       email: json['email'] as String?,
       createdAt: json['created_at'] as String,
+      needsOnboarding: json['needs_onboarding'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$UserProfileImplToJson(_$UserProfileImpl instance) =>
@@ -61,4 +64,5 @@ Map<String, dynamic> _$$UserProfileImplToJson(_$UserProfileImpl instance) =>
       'id': instance.id,
       'email': instance.email,
       'created_at': instance.createdAt,
+      'needs_onboarding': instance.needsOnboarding,
     };

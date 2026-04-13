@@ -64,6 +64,18 @@ class Alternative with _$Alternative {
 }
 
 @freezed
+class UserInsight with _$UserInsight {
+  const factory UserInsight({
+    required String impact,
+    required String title,
+    required String description,
+  }) = _UserInsight;
+
+  factory UserInsight.fromJson(Map<String, dynamic> json) =>
+      _$UserInsightFromJson(json);
+}
+
+@freezed
 class AnalysisResult with _$AnalysisResult {
   const factory AnalysisResult({
     @JsonKey(name: 'health_score') required int healthScore,
@@ -74,6 +86,7 @@ class AnalysisResult with _$AnalysisResult {
     List<GoodIngredient> goodIngredients,
     @Default(<Alternative>[]) List<Alternative> alternatives,
     required String summary,
+    @JsonKey(name: 'user_insights') @Default(<UserInsight>[]) List<UserInsight> userInsights,
     @JsonKey(name: 'sources_used') @Default(<String>[]) List<String> sourcesUsed,
   }) = _AnalysisResult;
 

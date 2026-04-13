@@ -7,6 +7,7 @@ import '../../../core/constants/app_colors.dart';
 import '../data/models/scan_models.dart';
 import '../providers/scan_provider.dart';
 import 'widgets/sources_button.dart';
+import 'widgets/user_insights_card.dart';
 
 class AnalysisResultScreen extends ConsumerStatefulWidget {
   const AnalysisResultScreen({super.key, this.result});
@@ -104,6 +105,8 @@ class _AnalysisResultScreenState extends ConsumerState<AnalysisResultScreen>
                 ),
               ),
             ),
+            const SizedBox(height: 16),
+            if (analysis != null) UserInsightsCard(insights: analysis.userInsights),
             if (issues.isNotEmpty) ...[
               const SizedBox(height: 14),
               Row(
