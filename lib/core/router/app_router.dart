@@ -14,6 +14,7 @@ import '../../features/scan/presentation/analysis_result_screen.dart';
 import '../../features/scan/presentation/barcode_scan_screen.dart';
 import '../../features/scan/presentation/manual_entry_screen.dart';
 import '../../features/scan/presentation/ocr_scan_screen.dart';
+import '../../features/auth/presentation/introduction_screen.dart';
 import '../constants/app_colors.dart';
 
 class _RouterRefreshNotifier extends ChangeNotifier {
@@ -59,14 +60,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 
       if (path == '/splash') {
         if (isAuthenticated) {
-          if (shouldForceOnboarding) return '/onboarding';
+          if (shouldForceOnboarding) return '/introduction';
           return '/home';
         }
         return '/login';
       }
 
-      if (isAuthenticated && shouldForceOnboarding && path != '/onboarding') {
-        return '/onboarding';
+      if (isAuthenticated && shouldForceOnboarding && path != '/introduction') {
+        return '/introduction';
       }
 
       if (!isAuthenticated && !isAuthPage) return '/login';
@@ -156,7 +157,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => AnalysisResultScreen(result: state.extra),
       ),
       GoRoute(
-        path: '/onboarding',
+        path: '/introduction',
+        builder: (context, state) => const IntroductionOnboardingScreen(),
+      ),
+      GoRoute(
+        path: '/profile-setup',
         builder: (context, state) => const HealthProfileScreen(isOnboarding: true),
       ),
     ],

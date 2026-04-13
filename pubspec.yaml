@@ -29,6 +29,7 @@ dependencies:
   pinput: ^6.0.2
   gauge_indicator: ^0.4.3
   url_launcher: ^6.3.2
+  introduction_screen: ^4.0.0
 
 dev_dependencies:
   flutter_test:
