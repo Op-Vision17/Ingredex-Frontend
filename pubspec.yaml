@@ -30,6 +30,8 @@ dependencies:
   gauge_indicator: ^0.4.3
   url_launcher: ^6.3.2
   introduction_screen: ^4.0.0
+  smooth_page_indicator: ^2.0.1
+  video_player: ^2.11.1
 
 dev_dependencies:
   flutter_test:

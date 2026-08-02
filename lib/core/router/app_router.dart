@@ -15,6 +15,8 @@ import '../../features/scan/presentation/barcode_scan_screen.dart';
 import '../../features/scan/presentation/manual_entry_screen.dart';
 import '../../features/scan/presentation/ocr_scan_screen.dart';
 import '../../features/auth/presentation/introduction_screen.dart';
+import '../../features/auth/presentation/splash_screen.dart';
+import '../../features/auth/providers/splash_provider.dart';
 import '../constants/app_colors.dart';
 
 class _RouterRefreshNotifier extends ChangeNotifier {
@@ -24,6 +26,9 @@ class _RouterRefreshNotifier extends ChangeNotifier {
 final routerRefreshNotifierProvider = Provider<_RouterRefreshNotifier>((ref) {
   final notifier = _RouterRefreshNotifier();
   ref.listen<AsyncValue<AuthState>>(authNotifierProvider, (_, _) {
+    notifier.refresh();
+  });
+  ref.listen<bool>(splashCompletedProvider, (_, __) {
     notifier.refresh();
   });
   ref.onDispose(notifier.dispose);
@@ -39,12 +44,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final auth = ref.read(authNotifierProvider);
       final authState = auth.valueOrNull;
+      final splashCompleted = ref.read(splashCompletedProvider);
       final path = state.matchedLocation;
 
       final isBootstrap =
           authState == null ||
           authState.maybeWhen(unknown: () => true, orElse: () => false);
-      if (isBootstrap) {
+          
+      if (isBootstrap || !splashCompleted) {
         return path == '/splash' ? null : '/splash';
       }
 
@@ -77,15 +84,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(
         path: '/splash',
-        builder: (context, state) =>
-            Scaffold(body: Center(child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset('assets/app_logo_bgremove.png', width: 200, height: 200),
-                const SizedBox(height: 24),
-                const CircularProgressIndicator(),
-              ],
-            ))),
+        builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(
