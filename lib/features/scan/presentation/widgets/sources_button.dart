@@ -42,22 +42,32 @@ class SourcesButton extends StatelessWidget {
                           Expanded(
                             child: ListView.builder(
                               controller: scrollController,
-                              itemCount: sources.length,
                               itemBuilder: (context, index) {
                                 final source = sources[index];
+                                final isInternal = source.toLowerCase().trim() == 'ingredex';
                                 return ListTile(
                                   leading: Icon(
-                                    Icons.link_rounded,
+                                    isInternal ? Icons.verified_user_rounded : Icons.link_rounded,
                                     color: Theme.of(
                                       context,
                                     ).colorScheme.primary,
                                   ),
-                                  title: Text(source),
-                                  trailing: const Icon(
+                                  title: Text(isInternal ? 'Ingredex Knowledge Base' : source),
+                                  subtitle: isInternal ? const Text('Verified toxicological knowledge base') : null,
+                                  trailing: isInternal ? null : const Icon(
                                     Icons.open_in_new_rounded,
                                     size: 20,
                                   ),
                                   onTap: () async {
+                                    if (isInternal) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Verified internal toxicological knowledge base.'),
+                                          duration: Duration(seconds: 2),
+                                        ),
+                                      );
+                                      return;
+                                    }
                                     var urlStr = source;
                                     if (!urlStr.startsWith('http')) {
                                       urlStr = 'https://$urlStr';

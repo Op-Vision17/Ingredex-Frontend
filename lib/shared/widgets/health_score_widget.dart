@@ -46,7 +46,7 @@ class _HealthScoreWidgetState extends State<HealthScoreWidget>
       };
 
   Color _color(double score) {
-    if (score >= 70) return AppColors.success;
+    if (score >= 75) return AppColors.success;
     if (score >= 40) return AppColors.warning;
     return AppColors.error;
   }

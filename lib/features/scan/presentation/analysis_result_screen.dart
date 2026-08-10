@@ -41,7 +41,7 @@ class _AnalysisResultScreenState extends ConsumerState<AnalysisResultScreen>
   }
 
   Color _scoreColor(double score) {
-    if (score >= 70) return AppColors.success;
+    if (score >= 75) return AppColors.success;
     if (score >= 40) return AppColors.warning;
     return AppColors.error;
   }
@@ -65,7 +65,7 @@ class _AnalysisResultScreenState extends ConsumerState<AnalysisResultScreen>
     final scoreColor = _scoreColor(score);
     final scanId = external?.scanId ?? lastResult?.scanId;
     final heroTag =
-        'health-score-${scanId ?? productName}-${score.toStringAsFixed(0)}';
+        'health-score-${scanId ?? identityHashCode(analysis)}-${score.toStringAsFixed(0)}';
 
     return Scaffold(
       appBar: AppBar(title: const Text('Analysis Result')),

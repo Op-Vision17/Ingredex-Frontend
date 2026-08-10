@@ -48,7 +48,14 @@ class _ManualEntryScreenState extends ConsumerState<ManualEntryScreen> {
   }
 
   Future<void> _analyze() async {
-    if (_ingredients.text.trim().isEmpty || _isProcessing) {
+    final text = _ingredients.text.trim();
+    if (_isProcessing) return;
+    if (text.isEmpty) {
+      SnackBarService.show('Please enter ingredient text to analyze.');
+      return;
+    }
+    if (text.length < 10) {
+      SnackBarService.show('Please enter at least 10 characters of ingredients.');
       return;
     }
     setState(() => _isProcessing = true);

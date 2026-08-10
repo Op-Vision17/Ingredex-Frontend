@@ -97,7 +97,7 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen>
           if (analysis != null) {
             final score = analysis.healthScore;
             final scoreColor = switch (score) {
-              >= 70 => AppColors.success,
+              >= 75 => AppColors.success,
               >= 40 => AppColors.warning,
               _ => AppColors.error,
             };
