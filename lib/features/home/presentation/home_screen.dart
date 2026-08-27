@@ -9,6 +9,7 @@ import '../../../core/utils/snackbar_service.dart';
 import '../../account/providers/account_provider.dart';
 import '../../auth/providers/auth_provider.dart';
 import 'widgets/profile_onboarding_card.dart';
+import 'widgets/recent_scans_section.dart';
 import 'widgets/scan_options_card.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -24,6 +25,8 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final mode = ref.watch(themeProvider);
     final authState = ref.watch(authNotifierProvider).valueOrNull;
     final email = authState?.maybeWhen(
@@ -42,17 +45,42 @@ class HomeScreen extends ConsumerWidget {
         automaticallyImplyLeading: false,
         title: Row(
           children: [
-            Image.asset(
-              'assets/app_logo_bgremove.png',
-              width: 32,
-              height: 32,
+            Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkCard : Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                ),
+              ),
+              child: Image.asset(
+                'assets/app_logo_bgremove.png',
+                width: 26,
+                height: 26,
+              ),
             ),
             const SizedBox(width: 12),
-            Text(
-              'Hi, $firstName! 👋',
-              style: AppTextStyles.heading3.copyWith(
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Hi, $firstName! 👋',
+                  style: AppTextStyles.heading3.copyWith(
+                    color: isDark ? AppColors.darkText : AppColors.lightText,
+                    fontSize: 16,
+                  ),
+                ),
+                Text(
+                  'Know what you eat',
+                  style: AppTextStyles.caption.copyWith(
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                    fontSize: 11,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -78,75 +106,203 @@ class HomeScreen extends ConsumerWidget {
             },
             icon: const Icon(Icons.notifications_none_rounded),
           ),
+          PopupMenuButton<String>(
+            tooltip: 'Account Menu',
+            icon: const Icon(Icons.account_circle_outlined),
+            onSelected: (value) async {
+              if (value == 'profile') {
+                context.push('/account/profile');
+              } else if (value == 'account') {
+                context.go('/account');
+              } else if (value == 'logout') {
+                final ok = await showDialog<bool>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: const Text('Log Out?'),
+                    content: const Text('Are you sure you want to log out of Ingredex?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx, false),
+                        child: const Text('Cancel'),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.highRisk,
+                          foregroundColor: Colors.white,
+                        ),
+                        onPressed: () => Navigator.pop(ctx, true),
+                        child: const Text('Log Out'),
+                      ),
+                    ],
+                  ),
+                );
+                if (ok == true) {
+                  await ref.read(authNotifierProvider.notifier).logout();
+                }
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'account',
+                child: Row(
+                  children: [
+                    Icon(Icons.manage_accounts_outlined, size: 20),
+                    SizedBox(width: 10),
+                    Text('My Account'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'profile',
+                child: Row(
+                  children: [
+                    Icon(Icons.health_and_safety_outlined, size: 20),
+                    SizedBox(width: 10),
+                    Text('Health Profile'),
+                  ],
+                ),
+              ),
+              const PopupMenuDivider(),
+              const PopupMenuItem(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    Icon(Icons.logout_rounded, color: AppColors.highRisk, size: 20),
+                    SizedBox(width: 10),
+                    Text('Log Out', style: TextStyle(color: AppColors.highRisk)),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 10, 16, 20),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Hero Action Banner
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(18),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [AppColors.primaryOrange, AppColors.lightOrange],
+                  colors: [
+                    Color(0xFF059669), // Emerald Dark
+                    Color(0xFF10B981), // Emerald Primary
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    blurRadius: 14,
-                    offset: const Offset(0, 6),
+                    color: const Color(0xFF10B981).withValues(alpha: 0.25),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
                   ),
                 ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.bolt_rounded, color: Colors.white, size: 14),
+                            SizedBox(width: 4),
+                            Text(
+                              'AI-POWERED ANALYSIS',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
                   Text(
-                    'Start a new analysis',
+                    'Instant Food & Ingredient Health Check',
                     style: AppTextStyles.heading2.copyWith(
                       color: Colors.white,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 19,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
                   Text(
-                    'Scan barcode, read label, or type ingredients manually.',
-                    style: AppTextStyles.body2.copyWith(color: Colors.white),
+                    'Detect hidden toxins, harmful preservatives & allergens in seconds.',
+                    style: AppTextStyles.body2.copyWith(
+                      color: Colors.white.withValues(alpha: 0.9),
+                      fontSize: 13,
+                    ),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
-                    child: FilledButton.icon(
+                    child: ElevatedButton.icon(
                       onPressed: () => context.push('/scan/barcode'),
-                      icon: const Icon(Icons.qr_code_scanner_rounded),
-                      label: const Text('Quick Scan'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: const Color(0xFF047857),
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      icon: const Icon(Icons.qr_code_scanner_rounded, size: 20),
+                      label: Text(
+                        'Quick Scan Barcode',
+                        style: AppTextStyles.button.copyWith(
+                          color: const Color(0xFF047857),
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
+
             if (needsOnboarding) ...[
               const SizedBox(height: 18),
               const ProfileOnboardingCard(),
             ],
-            const SizedBox(height: 18),
+
+            const SizedBox(height: 22),
             Text(
-              'Scan options',
+              'More Analysis Options',
               style: AppTextStyles.heading3.copyWith(
-                color: Theme.of(context).colorScheme.onSurface,
+                color: isDark ? AppColors.darkText : AppColors.lightText,
+                fontSize: 17,
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
+
+            // Scan Options Grid: Barcode 1st, Ingredients OCR 2nd
             Row(
               children: [
                 Expanded(
                   child: ScanOptionsCard(
                     title: 'Scan Barcode',
-                    subtitle: 'Point at any barcode',
-                    icon: Icons.qr_code_2_rounded,
+                    subtitle: 'Instant product lookup',
+                    icon: Icons.qr_code_scanner_rounded,
+                    accentColor: AppColors.accentTangerine,
                     onTap: () => context.push('/scan/barcode'),
                   ),
                 ),
@@ -154,32 +310,72 @@ class HomeScreen extends ConsumerWidget {
                 Expanded(
                   child: ScanOptionsCard(
                     title: 'Scan Label',
-                    subtitle: 'Photo of ingredients',
+                    subtitle: 'Camera OCR text',
                     icon: Icons.camera_alt_rounded,
+                    accentColor: AppColors.primaryEmerald,
                     onTap: () => context.push('/scan/ocr'),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 12),
-            Card(
-              elevation: 0.8,
+
+            // Manual Entry Full Card
+            Material(
+              color: isDark ? AppColors.darkCard : AppColors.lightCard,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+                side: BorderSide(
+                  color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                  width: 1,
+                ),
+              ),
               child: ListTile(
                 onTap: () => context.push('/scan/manual'),
-                leading: const Icon(
-                  Icons.edit_note_rounded,
-                  color: AppColors.primaryOrange,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                leading: Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: AppColors.accentAmber.withValues(alpha: isDark ? 0.20 : 0.12),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppColors.accentAmber.withValues(alpha: 0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.edit_note_rounded,
+                    color: AppColors.accentAmber,
+                    size: 22,
+                  ),
                 ),
                 title: Text(
                   'Type ingredients manually',
-                  style: AppTextStyles.body1.copyWith(
-                    fontWeight: FontWeight.w600,
+                  style: AppTextStyles.heading3.copyWith(
+                    fontSize: 15,
+                    color: isDark ? AppColors.darkText : AppColors.lightText,
                   ),
                 ),
-                subtitle: const Text('Paste from label or write your own list'),
-                trailing: const Icon(Icons.chevron_right),
+                subtitle: Text(
+                  'Paste from online product page or write text',
+                  style: AppTextStyles.caption.copyWith(
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                ),
+                trailing: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 15,
+                  color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                ),
               ),
             ),
+
+            const SizedBox(height: 24),
+            // Recent Scans Section with Live History
+            const RecentScansSection(),
           ],
         ),
       ),

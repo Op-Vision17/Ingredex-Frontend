@@ -4,6 +4,7 @@ import 'package:gauge_indicator/gauge_indicator.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_text_styles.dart';
 import '../data/models/scan_models.dart';
 import '../providers/scan_provider.dart';
 import 'widgets/sources_button.dart';
@@ -23,13 +24,14 @@ class _AnalysisResultScreenState extends ConsumerState<AnalysisResultScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _appear;
+  int _selectedTab = 0; // 0: Issues, 1: Beneficial, 2: Insights, 3: Alternatives
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 700),
+      duration: const Duration(milliseconds: 600),
     )..forward();
     _appear = CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic);
   }
@@ -41,13 +43,15 @@ class _AnalysisResultScreenState extends ConsumerState<AnalysisResultScreen>
   }
 
   Color _scoreColor(double score) {
-    if (score >= 75) return AppColors.success;
-    if (score >= 40) return AppColors.warning;
-    return AppColors.error;
+    if (score >= 75) return AppColors.lowRisk;
+    if (score >= 40) return AppColors.mediumRisk;
+    return AppColors.highRisk;
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final lastResult = ref.watch(lastAnalysisProvider);
     final external = widget.result is AnalyzeResponse
         ? widget.result as AnalyzeResponse
@@ -62,205 +66,312 @@ class _AnalysisResultScreenState extends ConsumerState<AnalysisResultScreen>
     final good = analysis?.goodIngredients ?? const <GoodIngredient>[];
     final alternatives = analysis?.alternatives ?? const <Alternative>[];
     final sourcesUsed = analysis?.sourcesUsed ?? const <String>[];
+    final insights = analysis?.userInsights ?? const <UserInsight>[];
     final scoreColor = _scoreColor(score);
     final scanId = external?.scanId ?? lastResult?.scanId;
     final heroTag =
         'health-score-${scanId ?? identityHashCode(analysis)}-${score.toStringAsFixed(0)}';
 
+    final allSources = {
+      ...sourcesUsed,
+      ...issues.map((e) => e.sourceDomain).where((d) => d.trim().isNotEmpty),
+      ...good.map((e) => e.sourceDomain).where((d) => d.trim().isNotEmpty),
+    }.toList();
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Analysis Result')),
+      appBar: AppBar(
+        title: const Text('Product Analysis'),
+        actions: [
+          IconButton(
+            tooltip: 'Back to Home',
+            icon: const Icon(Icons.home_outlined),
+            onPressed: () => context.go('/home'),
+          ),
+        ],
+      ),
       body: FadeTransition(
         opacity: _appear,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 110),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 110),
           children: [
+            // Product Title
             Text(
               productName,
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+              style: AppTextStyles.heading1.copyWith(
+                color: isDark ? AppColors.darkText : AppColors.lightText,
+              ),
             ),
             const SizedBox(height: 14),
-            Center(
-              child: Column(
-                children: [
-                  Hero(
-                    tag: heroTag,
-                    child: _ScoreGauge(
-                      score: score.toInt(),
-                      scoreColor: scoreColor,
-                      risk: risk,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            _SlideInCard(
-              delay: 80,
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(14),
-                  child: Text(summary),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            if (analysis != null) UserInsightsCard(insights: analysis.userInsights),
-            if (issues.isNotEmpty) ...[
-              const SizedBox(height: 14),
-              Row(
-                children: [
-                  Icon(
-                    Icons.warning_amber_rounded,
-                    color: AppColors.error,
-                    size: 22,
-                  ),
-                  const SizedBox(width: 8),
-                  const Text(
-                    'Concerning Ingredients',
-                    style: TextStyle(fontWeight: FontWeight.w700),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              ...issues.map((item) {
-                final risk = item.risk.trim().toLowerCase();
-                final alpha = switch (risk) {
-                  'high' => 0.28,
-                  'medium' => 0.14,
-                  'low' => 0.09,
-                  _ => 0.10,
-                };
-                return Card(
-                  color: AppColors.error.withValues(alpha: alpha),
-                  child: ListTile(
-                    title: Text(
-                      item.ingredient,
-                      style: const TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(item.reason),
-                        if (item.sourceDomain.isNotEmpty) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            'Source: ${item.sourceDomain}',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.primaryOrange,
-                            ),
-                          ),
-                        ]
-                      ],
-                    ),
-                    trailing: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
+
+            // Hero Score Gauge Card
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 16),
+                child: Column(
+                  children: [
+                    Hero(
+                      tag: heroTag,
+                      child: _ScoreGauge(
+                        score: score.toInt(),
+                        scoreColor: scoreColor,
+                        risk: risk,
                       ),
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: AppColors.error.withValues(
-                          alpha: risk == 'high' ? 0.30 : 0.2,
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.04)
+                            : AppColors.lightBackground,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
                         ),
-                        borderRadius: BorderRadius.circular(999),
                       ),
-                      child: Text(item.risk),
-                    ),
-                  ),
-                );
-              }),
-            ],
-            if (good.isNotEmpty) ...[
-              const SizedBox(height: 14),
-              Row(
-                children: [
-                  Icon(
-                    Icons.check_circle_outline,
-                    color: AppColors.success,
-                    size: 22,
-                  ),
-                  const SizedBox(width: 8),
-                  const Text(
-                    'Beneficial Ingredients',
-                    style: TextStyle(fontWeight: FontWeight.w700),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              ...good.map(
-                (item) => Card(
-                  color: AppColors.success.withValues(alpha: 0.08),
-                  child: ListTile(
-                    title: Text(
-                      item.ingredient,
-                      style: const TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(item.benefit),
-                        if (item.sourceDomain.isNotEmpty) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            'Source: ${item.sourceDomain}',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.success,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.auto_awesome_rounded,
+                            size: 20,
+                            color: scoreColor,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              summary,
+                              style: AppTextStyles.body2.copyWith(
+                                color: isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary,
+                                height: 1.45,
+                              ),
                             ),
                           ),
-                        ]
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
-            ],
-            if (alternatives.isNotEmpty) ...[
-              const SizedBox(height: 14),
-              Row(
+            ),
+            const SizedBox(height: 16),
+
+            // Segmented Category Bar (Personal Insights First)
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
                 children: [
-                  Icon(
-                    Icons.lightbulb_outline,
-                    color: AppColors.primaryOrange,
-                    size: 22,
+                  _CategoryPill(
+                    label: 'Insights (${insights.length})',
+                    icon: Icons.lightbulb_outline_rounded,
+                    isSelected: _selectedTab == 0,
+                    color: AppColors.accentAmber,
+                    onTap: () => setState(() => _selectedTab = 0),
                   ),
                   const SizedBox(width: 8),
-                  const Text(
-                    'Healthier Alternatives',
-                    style: TextStyle(fontWeight: FontWeight.w700),
+                  _CategoryPill(
+                    label: 'Issues (${issues.length})',
+                    icon: Icons.warning_amber_rounded,
+                    isSelected: _selectedTab == 1,
+                    color: AppColors.highRisk,
+                    onTap: () => setState(() => _selectedTab = 1),
                   ),
+                  const SizedBox(width: 8),
+                  _CategoryPill(
+                    label: 'Safe (${good.length})',
+                    icon: Icons.eco_outlined,
+                    isSelected: _selectedTab == 2,
+                    color: AppColors.lowRisk,
+                    onTap: () => setState(() => _selectedTab = 2),
+                  ),
+                  if (alternatives.isNotEmpty) ...[
+                    const SizedBox(width: 8),
+                    _CategoryPill(
+                      label: 'Alternatives (${alternatives.length})',
+                      icon: Icons.swap_horiz_rounded,
+                      isSelected: _selectedTab == 3,
+                      color: AppColors.accentTangerine,
+                      onTap: () => setState(() => _selectedTab = 3),
+                    ),
+                  ],
                 ],
               ),
-              const SizedBox(height: 8),
-              ...alternatives.map(
-                (item) => Card(
-                  child: ListTile(
-                    title: Text(
-                      item.name,
-                      style: const TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                    subtitle: Text(item.reason),
-                  ),
-                ),
+            ),
+            const SizedBox(height: 14),
+
+            // Active Tab Content
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 250),
+              child: _buildTabContent(
+                selectedTab: _selectedTab,
+                issues: issues,
+                good: good,
+                insights: insights,
+                alternatives: alternatives,
+                isDark: isDark,
               ),
-            ],
-            SourcesButton(sources: sourcesUsed),
+            ),
+            const SizedBox(height: 16),
+
+            // Verified Scientific Sources
+            SourcesButton(sources: allSources),
           ],
         ),
       ),
       bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+            border: Border(
+              top: BorderSide(
+                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                width: 1,
+              ),
+            ),
+          ),
           child: Row(
             children: [
               Expanded(
-                child: OutlinedButton(
+                child: OutlinedButton.icon(
                   onPressed: () => context.go('/home'),
-                  child: const Text('Back to home'),
+                  icon: const Icon(Icons.arrow_back_rounded, size: 18),
+                  label: const Text('Back to Home'),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () => context.push('/scan/ocr'),
+                  icon: const Icon(Icons.camera_alt_rounded, size: 18),
+                  label: const Text('Scan Another'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabContent({
+    required int selectedTab,
+    required List<IngredientIssue> issues,
+    required List<GoodIngredient> good,
+    required List<UserInsight> insights,
+    required List<Alternative> alternatives,
+    required bool isDark,
+  }) {
+    switch (selectedTab) {
+      case 0:
+        return UserInsightsCard(
+          key: const ValueKey(0),
+          insights: insights,
+        );
+      case 1:
+        if (issues.isEmpty) {
+          return const _EmptySectionCard(
+            icon: Icons.check_circle_rounded,
+            color: AppColors.lowRisk,
+            title: 'No Problematic Additives Found',
+            subtitle: 'This product does not contain high or medium risk flagged additives.',
+          );
+        }
+        return Column(
+          key: const ValueKey(1),
+          children: issues.map((item) => _IssueCard(issue: item, isDark: isDark)).toList(),
+        );
+      case 2:
+        if (good.isEmpty) {
+          return const _EmptySectionCard(
+            icon: Icons.eco_outlined,
+            color: AppColors.accentAmber,
+            title: 'No Notable Nutrients Highlighted',
+            subtitle: 'Ingredients are neutral standard components.',
+          );
+        }
+        return Column(
+          key: const ValueKey(2),
+          children: good.map((item) => _GoodIngredientCard(item: item, isDark: isDark)).toList(),
+        );
+      case 3:
+        if (alternatives.isEmpty) {
+          return const _EmptySectionCard(
+            icon: Icons.swap_horiz_rounded,
+            color: AppColors.accentTangerine,
+            title: 'No Alternatives Needed',
+            subtitle: 'This product is already a clean choice.',
+          );
+        }
+        return Column(
+          key: const ValueKey(3),
+          children: alternatives
+              .map((item) => _AlternativeCard(alternative: item, isDark: isDark))
+              .toList(),
+        );
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+}
+
+class _CategoryPill extends StatelessWidget {
+  const _CategoryPill({
+    required this.label,
+    required this.icon,
+    required this.isSelected,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final bool isSelected;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? color.withValues(alpha: isDark ? 0.25 : 0.14)
+                : (isDark ? AppColors.darkCard : AppColors.lightCard),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected
+                  ? color
+                  : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+              width: isSelected ? 1.5 : 1,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 16,
+                color: isSelected ? color : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: AppTextStyles.body2.copyWith(
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  color: isSelected
+                      ? color
+                      : (isDark ? AppColors.darkText : AppColors.lightText),
                 ),
               ),
             ],
@@ -298,7 +409,7 @@ class _ScoreGauge extends StatelessWidget {
             min: 0,
             max: 100,
             degrees: 270,
-            style: GaugeAxisStyle(
+            style: const GaugeAxisStyle(
               thickness: 14,
               background: Colors.transparent,
               segmentSpacing: 2,
@@ -397,37 +508,284 @@ class _ScoreGauge extends StatelessWidget {
   }
 }
 
-class _SlideInCard extends StatefulWidget {
-  const _SlideInCard({required this.child, this.delay = 0});
+class _IssueCard extends StatelessWidget {
+  const _IssueCard({required this.issue, required this.isDark});
 
-  final Widget child;
-  final int delay;
-
-  @override
-  State<_SlideInCard> createState() => _SlideInCardState();
-}
-
-class _SlideInCardState extends State<_SlideInCard> {
-  bool _visible = false;
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration(milliseconds: widget.delay), () {
-      if (mounted) setState(() => _visible = true);
-    });
-  }
+  final IngredientIssue issue;
+  final bool isDark;
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSlide(
-      duration: const Duration(milliseconds: 420),
-      offset: _visible ? Offset.zero : const Offset(0, 0.08),
-      curve: Curves.easeOutCubic,
-      child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 420),
-        opacity: _visible ? 1 : 0,
-        child: widget.child,
+    final riskLower = issue.risk.trim().toLowerCase();
+    final isHigh = riskLower == 'high';
+    final cardBorderColor = isHigh ? AppColors.highRisk : AppColors.mediumRisk;
+    final cardBgColor = isHigh
+        ? (isDark ? AppColors.darkHighRiskBg.withValues(alpha: 0.3) : AppColors.highRiskBg)
+        : (isDark ? AppColors.darkMediumRiskBg.withValues(alpha: 0.3) : AppColors.mediumRiskBg);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: cardBgColor,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: cardBorderColor.withValues(alpha: 0.4), width: 1.2),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  issue.ingredient,
+                  style: AppTextStyles.heading3.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                decoration: BoxDecoration(
+                  color: cardBorderColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  issue.risk.toUpperCase(),
+                  style: AppTextStyles.caption.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.4,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            issue.reason,
+            style: AppTextStyles.body2.copyWith(
+              color: isDark ? AppColors.darkText : AppColors.lightText,
+              height: 1.4,
+            ),
+          ),
+          if (issue.sourceDomain.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Icon(Icons.verified_outlined, size: 14, color: AppColors.primaryEmerald),
+                const SizedBox(width: 4),
+                Text(
+                  'Cited by ${issue.sourceDomain}',
+                  style: AppTextStyles.caption.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? AppColors.lightOrange : AppColors.primaryEmeraldDark,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _GoodIngredientCard extends StatelessWidget {
+  const _GoodIngredientCard({required this.item, required this.isDark});
+
+  final GoodIngredient item;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: isDark
+            ? AppColors.darkLowRiskBg.withValues(alpha: 0.3)
+            : AppColors.lowRiskBg,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: AppColors.lowRisk.withValues(alpha: 0.4),
+          width: 1.2,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.check_circle_rounded, size: 18, color: AppColors.lowRisk),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  item.ingredient,
+                  style: AppTextStyles.heading3.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: AppColors.lowRisk,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  'BENEFICIAL',
+                  style: AppTextStyles.caption.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 10,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            item.benefit,
+            style: AppTextStyles.body2.copyWith(
+              color: isDark ? AppColors.darkText : AppColors.lightText,
+              height: 1.4,
+            ),
+          ),
+          if (item.sourceDomain.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Icon(Icons.verified_outlined, size: 14, color: AppColors.primaryEmerald),
+                const SizedBox(width: 4),
+                Text(
+                  'Source: ${item.sourceDomain}',
+                  style: AppTextStyles.caption.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? AppColors.lightOrange : AppColors.primaryEmeraldDark,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _AlternativeCard extends StatelessWidget {
+  const _AlternativeCard({required this.alternative, required this.isDark});
+
+  final Alternative alternative;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkCard : AppColors.lightCard,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+          width: 1,
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.accentTangerine.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Icon(
+              Icons.swap_horiz_rounded,
+              color: AppColors.accentTangerine,
+              size: 22,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  alternative.name,
+                  style: AppTextStyles.heading3.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  alternative.reason,
+                  style: AppTextStyles.body2.copyWith(
+                    color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EmptySectionCard extends StatelessWidget {
+  const _EmptySectionCard({
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.subtitle,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkCard : AppColors.lightCard,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+        ),
+      ),
+      child: Center(
+        child: Column(
+          children: [
+            Icon(icon, size: 36, color: color),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              style: AppTextStyles.heading3.copyWith(fontSize: 15),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              subtitle,
+              style: AppTextStyles.caption.copyWith(
+                color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -10,21 +10,28 @@ class ScanOptionsCard extends StatelessWidget {
     required this.subtitle,
     required this.icon,
     required this.onTap,
+    this.accentColor = AppColors.primaryEmerald,
   });
 
   final String title;
   final String subtitle;
   final IconData icon;
   final VoidCallback onTap;
+  final Color accentColor;
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Material(
-      color: scheme.surfaceContainerHighest,
-      borderRadius: BorderRadius.circular(16),
-      elevation: 1.5,
-      shadowColor: scheme.shadow,
+      color: isDark ? AppColors.darkCard : AppColors.lightCard,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+          width: 1,
+        ),
+      ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: onTap,
@@ -34,24 +41,33 @@ class ScanOptionsCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 42,
-                height: 42,
+                width: 44,
+                height: 44,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryOrange.withValues(alpha: 0.15),
+                  color: accentColor.withValues(alpha: isDark ? 0.20 : 0.12),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: accentColor.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
                 ),
-                child: Icon(icon, color: AppColors.primaryOrange),
+                child: Icon(icon, color: accentColor, size: 22),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 14),
               Text(
                 title,
-                style: AppTextStyles.heading3.copyWith(color: scheme.onSurface),
+                style: AppTextStyles.heading3.copyWith(
+                  fontSize: 16,
+                  color: isDark ? AppColors.darkText : AppColors.lightText,
+                ),
               ),
               const SizedBox(height: 4),
               Text(
                 subtitle,
-                style: AppTextStyles.body2.copyWith(
-                  color: scheme.onSurfaceVariant,
+                style: AppTextStyles.caption.copyWith(
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
                 ),
               ),
             ],

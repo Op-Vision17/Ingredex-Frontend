@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_text_styles.dart';
 import '../../data/models/history_models.dart';
 
 class HistoryItemCard extends StatelessWidget {
@@ -18,38 +19,47 @@ class HistoryItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final name = item.productName ?? 'Unnamed product';
     final initial = name.characters.first.toUpperCase();
     final type = item.scanType.toUpperCase();
     final score = (item.analysisResult?['health_score'] as num?)?.toInt();
     final risk = item.analysisResult?['risk_level'] as String?;
     final summary = item.analysisResult?['summary'] as String?;
-    final scheme = Theme.of(context).colorScheme;
     final scoreColor = switch (score ?? 0) {
-      >= 70 => AppColors.success,
-      >= 40 => AppColors.warning,
-      >= 1 => AppColors.error,
-      _ => scheme.onSurfaceVariant,
+      >= 70 => AppColors.lowRisk,
+      >= 40 => AppColors.mediumRisk,
+      >= 1 => AppColors.highRisk,
+      _ => isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
     };
 
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(14),
           child: Row(
             children: [
-              CircleAvatar(
-                radius: 22,
-                backgroundColor: AppColors.primaryOrange,
-                child: Text(
-                  initial,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryEmerald.withValues(alpha: isDark ? 0.20 : 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: AppColors.primaryEmerald.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    initial,
+                    style: AppTextStyles.heading3.copyWith(
+                      color: isDark ? AppColors.lightOrange : AppColors.primaryEmeraldDark,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
               ),
@@ -62,15 +72,18 @@ class HistoryItemCard extends StatelessWidget {
                       name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
+                      style: AppTextStyles.heading3.copyWith(
+                        fontSize: 15,
+                        color: isDark ? AppColors.darkText : AppColors.lightText,
                       ),
                     ),
                     const SizedBox(height: 3),
                     Text(
                       _formatDate(item.createdAt),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: scheme.onSurfaceVariant,
+                      style: AppTextStyles.caption.copyWith(
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
                       ),
                     ),
                     if (summary != null && summary.trim().isNotEmpty) ...[
@@ -79,8 +92,10 @@ class HistoryItemCard extends StatelessWidget {
                         summary.trim(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: scheme.onSurfaceVariant,
+                        style: AppTextStyles.caption.copyWith(
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
                         ),
                       ),
                     ],
@@ -91,17 +106,22 @@ class HistoryItemCard extends StatelessWidget {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.primaryOrange.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(999),
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.08)
+                            : AppColors.lightBackground,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                        ),
                       ),
                       child: Text(
                         risk == null || risk.trim().isEmpty
                             ? type
                             : '$type • ${risk.toUpperCase()}',
-                        style: const TextStyle(
-                          color: AppColors.primaryOrange,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
+                        style: AppTextStyles.caption.copyWith(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
                         ),
                       ),
                     ),
@@ -110,18 +130,23 @@ class HistoryItemCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Container(
-                width: 38,
-                height: 38,
+                width: 42,
+                height: 42,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: scoreColor.withValues(alpha: 0.14),
+                  color: scoreColor.withValues(alpha: isDark ? 0.20 : 0.14),
+                  border: Border.all(
+                    color: scoreColor.withValues(alpha: 0.4),
+                    width: 1.5,
+                  ),
                 ),
                 child: Center(
                   child: Text(
                     score?.toString() ?? '--',
-                    style: TextStyle(
+                    style: AppTextStyles.heading3.copyWith(
+                      fontSize: 15,
                       color: scoreColor,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
                 ),

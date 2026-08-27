@@ -4,9 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_text_styles.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../history/providers/history_provider.dart';
-import '../../../shared/widgets/app_button.dart';
 import '../../../core/theme/theme_provider.dart';
 import '../providers/account_provider.dart';
 
@@ -196,40 +196,83 @@ class AccountScreen extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 20),
-          const Text('Danger Zone', style: TextStyle(fontWeight: FontWeight.w700)),
-          const SizedBox(height: 8),
-          AppButton(
-            label: 'Logout',
-            variant: AppButtonVariant.outlined,
-            foregroundColor: AppColors.error,
-            borderColor: AppColors.error,
-            onPressed: () async {
-              final ok = await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Logout?'),
-                  content: const Text('Are you sure you want to logout?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, true),
-                      child: const Text(
-                        'Logout',
-                        style: TextStyle(color: AppColors.error),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-              if (ok == true) {
-                await ref.read(authNotifierProvider.notifier).logout();
-              }
-            },
+          const SizedBox(height: 24),
+          Text(
+            'Account Management',
+            style: AppTextStyles.heading3.copyWith(fontSize: 15),
           ),
+          const SizedBox(height: 10),
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.highRiskBg,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: AppColors.highRiskBorder,
+                width: 1.2,
+              ),
+            ),
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              leading: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppColors.highRisk.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.logout_rounded,
+                  color: AppColors.highRisk,
+                  size: 22,
+                ),
+              ),
+              title: Text(
+                'Log Out',
+                style: AppTextStyles.heading3.copyWith(
+                  fontSize: 16,
+                  color: AppColors.highRisk,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              subtitle: Text(
+                'Sign out of your Ingredex session',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.highRisk.withValues(alpha: 0.8),
+                ),
+              ),
+              trailing: const Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 16,
+                color: AppColors.highRisk,
+              ),
+              onTap: () async {
+                final ok = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Log Out?'),
+                    content: const Text('Are you sure you want to log out of Ingredex?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text('Cancel'),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.highRisk,
+                          foregroundColor: Colors.white,
+                        ),
+                        onPressed: () => Navigator.pop(context, true),
+                        child: const Text('Log Out'),
+                      ),
+                    ],
+                  ),
+                );
+                if (ok == true) {
+                  await ref.read(authNotifierProvider.notifier).logout();
+                }
+              },
+            ),
+          ),
+          const SizedBox(height: 32),
         ],
       ),
     );
