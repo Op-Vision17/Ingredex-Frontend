@@ -48,7 +48,12 @@ class _OcrScanScreenState extends ConsumerState<OcrScanScreen> {
 
   Future<void> _pick(ImageSource source) async {
     final picker = ImagePicker();
-    final file = await picker.pickImage(source: source, imageQuality: 90);
+    final file = await picker.pickImage(
+      source: source,
+      imageQuality: 75,
+      maxWidth: 1200,
+      maxHeight: 1200,
+    );
     if (file == null) return;
     setState(() {
       _image = File(file.path);

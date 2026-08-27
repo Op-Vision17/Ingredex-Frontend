@@ -37,6 +37,9 @@ class DioClient {
       receiveTimeout: const Duration(
         milliseconds: AppConstants.receiveTimeoutMs,
       ),
+      sendTimeout: const Duration(
+        milliseconds: AppConstants.sendTimeoutMs,
+      ),
       headers: {'Content-Type': 'application/json'},
     );
   }
