@@ -93,8 +93,15 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('History')),
       body: RefreshIndicator(
-        onRefresh: () => ref.read(historyProvider.notifier).refresh(),
+        color: AppColors.primaryEmerald,
+        onRefresh: () async {
+          await Future.wait([
+            ref.read(historyProvider.notifier).refresh(),
+            ref.refresh(historyStatsProvider.future),
+          ]);
+        },
         child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
           controller: _scrollController,
           padding: const EdgeInsets.all(16),
           children: [

@@ -155,9 +155,16 @@ class _HealthProfileScreenState extends ConsumerState<HealthProfileScreen> {
               _dietController.text.isEmpty) {
             _loadFromModel(profile);
           }
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-            children: [
+          return RefreshIndicator(
+            color: AppColors.primaryEmerald,
+            onRefresh: () async {
+              ref.invalidate(userProfileProvider);
+              await ref.read(userProfileProvider.future);
+            },
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+              children: [
               Text(
                 'Personalized Health Guard',
                 style: AppTextStyles.heading1.copyWith(
@@ -270,10 +277,10 @@ class _HealthProfileScreenState extends ConsumerState<HealthProfileScreen> {
                 ),
               ),
             ],
-          );
-        },
-      ),
-    );
+          ),
+        );
+      },
+    ));
   }
 
   Widget _buildSectionHeader({

@@ -110,6 +110,21 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
     }
   }
 
+  Future<void> refreshUser() async {
+    try {
+      final user = await _repo.getCurrentUser();
+      final current = state.valueOrNull;
+      final onboarding = current?.maybeWhen(
+        authenticated: (_, ob) => ob,
+        orElse: () => false,
+      ) ?? false;
+      state = AsyncValue.data(AuthState.authenticated(
+        user: user,
+        shouldForceOnboarding: onboarding,
+      ));
+    } catch (_) {}
+  }
+
   String _messageFrom(Object e) {
     if (e is DioException) {
       final status = e.response?.statusCode;

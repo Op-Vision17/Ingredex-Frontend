@@ -78,9 +78,19 @@ class AccountScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Account')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
+      body: RefreshIndicator(
+        color: AppColors.primaryEmerald,
+        onRefresh: () async {
+          await Future.wait([
+            ref.read(authNotifierProvider.notifier).refreshUser(),
+            ref.refresh(historyStatsProvider.future),
+            ref.read(historyProvider.notifier).refresh(),
+          ]);
+        },
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(16),
+          children: [
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -275,6 +285,7 @@ class AccountScreen extends ConsumerWidget {
           const SizedBox(height: 32),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 }
