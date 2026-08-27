@@ -93,8 +93,15 @@ class ScanNotifier extends StateNotifier<ScanState> {
 
   String _messageFrom(Object e) {
     final text = e.toString();
-    if (text.contains('422')) return 'Could not read ingredients from image.';
-    if (text.contains('401')) return 'Please login again.';
-    return 'Something went wrong. Please try again.';
+    if (text.contains('422')) {
+      return 'Could not detect an ingredient list in the image. Please take a clearer photo.';
+    }
+    if (text.contains('401')) {
+      return 'Session expired. Please sign in again.';
+    }
+    if (text.contains('503') || text.contains('504')) {
+      return 'Analysis service is busy. Please try again in a few moments.';
+    }
+    return 'Something went wrong during analysis. Please try again.';
   }
 }

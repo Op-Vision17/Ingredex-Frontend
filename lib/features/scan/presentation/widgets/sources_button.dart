@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/utils/snackbar_service.dart';
+
 class SourcesButton extends StatelessWidget {
   const SourcesButton({super.key, required this.sources});
   final List<String> sources;
@@ -60,11 +62,9 @@ class SourcesButton extends StatelessWidget {
                                   ),
                                   onTap: () async {
                                     if (isInternal) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                          content: Text('Verified internal toxicological knowledge base.'),
-                                          duration: Duration(seconds: 2),
-                                        ),
+                                      SnackBarService.show(
+                                        'Verified scientific food safety standard from Ingredex knowledge base.',
+                                        duration: const Duration(seconds: 2),
                                       );
                                       return;
                                     }

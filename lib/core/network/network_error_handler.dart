@@ -5,22 +5,26 @@ class NetworkErrorHandler {
 
   static String messageFromDio(DioException error) {
     final status = error.response?.statusCode;
-    if (status == 401) return 'Session expired. Please login again.';
-    if (status == 403) return 'You are not allowed to perform this action.';
-    if (status == 404) return 'Requested data was not found.';
-    if (status == 422) return 'Please check your input and try again.';
+    if (status == 401) return 'Session expired. Please sign in again.';
+    if (status == 403) return 'You do not have permission for this action.';
+    if (status == 404) return 'The requested information could not be found.';
+    if (status == 422) return 'Could not read or process the provided input. Please try again.';
+    if (status == 503 || status == 504) {
+      return 'The analysis service is currently busy. Please try again in a few moments.';
+    }
     if (status != null && status >= 500) {
-      return 'Server is unavailable. Please try again later.';
+      return 'Our servers are experiencing high traffic. Please try again in a moment.';
     }
 
     switch (error.type) {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
+        return 'Connection timed out. Please check your internet and try again.';
       case DioExceptionType.connectionError:
-        return 'Network issue. Please check your internet and retry.';
+        return 'Unable to reach Ingredex. Please check your internet connection.';
       default:
-        return 'Something went wrong. Please try again.';
+        return 'Something went wrong. Please try again in a moment.';
     }
   }
 

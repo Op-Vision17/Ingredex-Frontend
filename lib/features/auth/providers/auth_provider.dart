@@ -113,16 +113,16 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
   String _messageFrom(Object e) {
     if (e is DioException) {
       final status = e.response?.statusCode;
-      if (status == 401) return 'Invalid or expired OTP.';
-      if (status == 422) return 'Please enter a valid email.';
+      if (status == 401) return 'Invalid or expired verification code. Please request a new one.';
+      if (status == 422) return 'Please enter a valid email address.';
       if (status != null && status >= 500) {
-        return 'Server error. Please try again.';
+        return 'Server is momentarily unavailable. Please try again shortly.';
       }
-      return e.message ?? 'Network error. Please try again.';
+      return 'Unable to connect. Please check your internet connection.';
     }
     final text = e.toString();
     if (text.contains('YOUR_LOCAL_IP')) {
-      return 'Base URL is not configured correctly in app_constants.dart';
+      return 'App server configuration is invalid.';
     }
     return text.isNotEmpty ? text : 'Something went wrong. Please try again.';
   }

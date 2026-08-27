@@ -51,11 +51,11 @@ class _ManualEntryScreenState extends ConsumerState<ManualEntryScreen> {
     final text = _ingredients.text.trim();
     if (_isProcessing) return;
     if (text.isEmpty) {
-      SnackBarService.show('Please enter ingredient text to analyze.');
+      SnackBarService.show('Please enter ingredients to analyze.');
       return;
     }
     if (text.length < 10) {
-      SnackBarService.show('Please enter at least 10 characters of ingredients.');
+      SnackBarService.show('Please enter at least 10 characters for an accurate analysis.');
       return;
     }
     setState(() => _isProcessing = true);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ingredex/core/utils/snackbar_service.dart';
 import 'package:ingredex/features/auth/providers/auth_provider.dart';
 import '../data/models/profile_models.dart';
 import '../data/providers/profile_provider.dart';
@@ -46,13 +47,9 @@ class _HealthProfileScreenState extends ConsumerState<HealthProfileScreen> {
     if (mounted) {
       final state = ref.read(profileNotifierProvider);
       if (state.hasError) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Failed: ${state.error}')));
+        SnackBarService.show('Unable to save profile. Please check your connection and try again.');
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile saved successfully!')),
-        );
+        SnackBarService.show('Health profile saved successfully!');
         if (widget.isOnboarding) {
           ref.read(authNotifierProvider.notifier).dismissOnboarding();
           context.go('/home');

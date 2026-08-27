@@ -74,7 +74,7 @@ class HomeScreen extends ConsumerWidget {
           IconButton(
             tooltip: 'Notifications',
             onPressed: () {
-              SnackBarService.show('Notifications are not available yet.');
+              SnackBarService.show('You are all caught up! No new notifications.');
             },
             icon: const Icon(Icons.notifications_none_rounded),
           ),
